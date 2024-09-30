@@ -1,0 +1,9 @@
+# IntellijIdea files
+*.iml
+.idea
+
+# Java Class Files #
+*.class
+
+# Package Files #
+*.jar
