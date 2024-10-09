@@ -13,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@Table(name = "truckpark")
+@Table(name = "truck_park")
 @Entity (name = "TruckPark")
 public class TruckPark implements Serializable {
 
@@ -22,18 +22,25 @@ public class TruckPark implements Serializable {
     @Column(name="id")
     private Long id;
 
-    @Column (name="trucksnum")
+    @Column (name="trucks_num")
     private Integer trucksNum;
 
     @Column (name="trucks_load_capacity")
     private Integer trucksLoadCapacity;
 
     // один автопарк у одного перевозчика => @OneToOne
-    @OneToOne
+    @OneToOne //(fetch = FetchType.LAZY)
     @MapsId // Связывает идентификаторы с сущностью Carrier
     @JsonIgnore
     private Carrier carrier;
 
+    @PreRemove
+    private void preRemove() {
+        if (this.carrier != null)
+            carrier.setPark(null);
+    }
+
+/*
     public Carrier getCarrier() {
         return carrier;
     }
@@ -41,5 +48,5 @@ public class TruckPark implements Serializable {
     public void setCarrier(Carrier carrier) {
         this.carrier = carrier;
         this.id = carrier.getId(); // Для отработки связи @OneToOne
-    }
+    }*/
 }

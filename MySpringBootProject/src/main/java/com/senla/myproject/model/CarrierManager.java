@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -16,10 +15,10 @@ import java.util.Set;
 @Builder
 @EqualsAndHashCode(exclude = {"carriers", "orders"})
 @ToString(exclude = {"carriers", "orders"})
-@Table(name = "carriermanager") // С помощью этой аннотации мы говорим Hibernate,  с какой именно таблицей необходимо связать (map) данный класс.
+@Table(name = "carrier_manager") // С помощью этой аннотации мы говорим Hibernate,  с какой именно таблицей необходимо связать (map) данный класс.
 @Entity (name = "CarrierManager") // на этот объект будет мапиться SQL
-@NamedEntityGraph (name = "carrierManager_entity-graph", //загружает данные в один запрос выбора, избегая повторного обращения к базе данных
-                   attributeNodes = @NamedAttributeNode("orders"))
+@NamedEntityGraph (name = "carrier_manager_entity_graph", //загружает данные в один запрос выбора, избегая повторного обращения к базе данных
+                   attributeNodes = @NamedAttributeNode("carriers"))
 public class CarrierManager implements Serializable {
 
      @Id
@@ -41,9 +40,9 @@ public class CarrierManager implements Serializable {
 
      @ManyToMany(fetch = FetchType.LAZY, cascade =
              {
-                     CascadeType.DETACH,
+                     //CascadeType.DETACH,
                      CascadeType.MERGE,
-                     CascadeType.REFRESH,
+                     //CascadeType.REFRESH,
                      CascadeType.PERSIST
              })
      @JoinTable(
@@ -71,10 +70,10 @@ public class CarrierManager implements Serializable {
     private Set<CarriageRequest> orders = new HashSet<>();
 
 
-   /* @PreRemove
+    @PreRemove
     private void preRemove() {
         if (this.orders != null)
             orders.forEach(order -> order.setManager(null));
-    }*/
+    }
 
 }

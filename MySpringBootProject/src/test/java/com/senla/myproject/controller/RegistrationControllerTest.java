@@ -2,7 +2,7 @@ package com.senla.myproject.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.senla.myproject.dto.*;
-import com.senla.myproject.mapper.EntityMapper;
+import com.senla.myproject.mapper.*;
 import com.senla.myproject.model.*;
 import com.senla.myproject.service.FreightExchangeService;
 import com.senla.myproject.util.*;
@@ -31,17 +31,10 @@ public class RegistrationControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private EntityMapper entityMapper;
-
-    @BeforeEach
-    public void setUp(){
-        entityMapper = new EntityMapper();
-    }
-
     @Test
     public void testAddCarrierManager() throws Exception {
         CarrierManager request = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto response = entityMapper.managerToDTO(request);
+        CarrierManagerDto response = CarrierManagerMapper.INSTANSE.toDTO(request);
         when(service.saveCarrierManager(response)).thenReturn(response);
 
         this.mockMvc.perform(post("/managers")
@@ -55,7 +48,7 @@ public class RegistrationControllerTest {
     @Test
     public void testAddCarriageRequest() throws Exception {
         CarriageRequest request = CarriageRequestGenerator.generateOrder();
-        CarriageRequestDto response = entityMapper.carriageRequestToDTO(request);
+        CarriageRequestDto response = CarriageRequestMapper.INSTANSE.toDTO(request);
         when(service.saveOrder(response)).thenReturn(response);
 
         this.mockMvc.perform(post("/orders")
@@ -69,7 +62,7 @@ public class RegistrationControllerTest {
     @Test
     public void testAddCarrier() throws Exception {
         Carrier request = CarrierGenerator.generateCarrier();
-        CarrierDto response = entityMapper.carrierToDTO(request);
+        CarrierDto response = CarrierMapper.INSTANSE.toDTO(request);
         when(service.saveCarrier(response)).thenReturn(response);
 
         this.mockMvc.perform(post("/carriers")
@@ -83,7 +76,7 @@ public class RegistrationControllerTest {
     @Test
     public void testAddFreightForwarder() throws Exception {
         FreightForwarder request = FreightForwarderGenerator.generateFreightForwarder();
-        FreightForwarderDto response = entityMapper.forwarderToDTO(request);
+        FreightForwarderDto response = FreightForwarderMapper.INSTANSE.toDTO(request);
         when(service.saveFreightForwarder(response)).thenReturn(response);
 
         this.mockMvc.perform(post("/forwarders")
@@ -97,7 +90,7 @@ public class RegistrationControllerTest {
     @Test
     public void testAddTruckPark() throws Exception {
         TruckPark request = TruckParkGenerator.generateTruckPark();
-        TruckParkDto response = entityMapper.truckParkToDTO(request);
+        TruckParkDto response = TruckParkMapper.INSTANSE.toDTO(request);
         when(service.saveTruckPark(response)).thenReturn(response);
 
         this.mockMvc.perform(post("/truck_parks")
@@ -108,29 +101,5 @@ public class RegistrationControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(response)));
     }
 
-    @Test
-    public void testUpdateCarrierManager() throws Exception {
-
-    }
-
-    @Test
-    public void testUpdateCarriageRequest() throws Exception {
-
-    }
-
-    @Test
-    public void testUpdateCarrier() throws Exception {
-
-    }
-
-    @Test
-    public void testUpdateFreightForwarder() throws Exception {
-
-    }
-
-    @Test
-    public void testUpdateTruckPark() throws Exception {
-
-    }
 
 }

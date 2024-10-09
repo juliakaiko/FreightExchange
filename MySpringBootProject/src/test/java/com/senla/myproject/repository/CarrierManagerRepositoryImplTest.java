@@ -31,16 +31,16 @@ public class CarrierManagerRepositoryImplTest {
     @Test
     public void findById() {
         this.managerRepository.save(expectedManager);
-        CarrierManager actualManager = managerRepository.getOne(1L);
+        CarrierManager actualManager = managerRepository.findById(1L).get();
         log.info("Test to find the CarrierManager with id = 1: "+actualManager);
         Assert.assertNotNull(actualManager);
-        Assert.assertEquals(expectedManager.getId(), actualManager.getId());
+        Assert.assertEquals(expectedManager, actualManager);
     }
 
     @Test
     public void save() {
         this.managerRepository.save(expectedManager);
-        CarrierManager actualManager =  managerRepository.getOne(expectedManager.getId());
+        CarrierManager actualManager =  managerRepository.findById(expectedManager.getId()).get();
         log.info("Test to save the CarrierManager: "+actualManager);
         Assertions.assertEquals(expectedManager,actualManager);
     }
@@ -48,7 +48,7 @@ public class CarrierManagerRepositoryImplTest {
     @Test
     public void delete() {
         this.managerRepository.save(expectedManager);
-        CarrierManager actualManager =  managerRepository.getOne(expectedManager.getId());
+        CarrierManager actualManager =  managerRepository.findById(expectedManager.getId()).get();
         managerRepository.delete(actualManager);
         log.info("Test to delete the CarrierManager with id = 1: "+actualManager);
         Optional<CarrierManager> deletedManager = managerRepository.findById(actualManager.getId());

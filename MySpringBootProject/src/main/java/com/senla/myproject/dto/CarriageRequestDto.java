@@ -20,7 +20,7 @@ public class CarriageRequestDto {
     private String finishPoint;
     private String cargo;
     private Long freight;
-    private boolean isValid;
+    private Boolean valid;
     @JsonIgnore
     private FreightForwarder forwarder;
     @JsonIgnore

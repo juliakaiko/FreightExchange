@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TruckParkRepository extends JpaRepository<TruckPark, Long> {
-
+/*
     @Override
     TruckPark getOne(Long aLong);
 
     @Override
-    void deleteById(Long aLong);
+    void deleteById(Long aLong);*/
 }

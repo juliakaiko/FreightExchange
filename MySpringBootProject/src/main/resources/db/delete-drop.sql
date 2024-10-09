@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS carriers, carriagerequest, Carrier, carrier, carrier_managers, managers, carriermanager, freightforwarder, forwarders, orders, truckpark, databasechangeloglock, databasechangelog;
+DROP TABLE IF EXISTS carriage_request, carrier, carrier_managers,  carrier_manager, freight_forwarder, truck_park, databasechangeloglock, databasechangelog;

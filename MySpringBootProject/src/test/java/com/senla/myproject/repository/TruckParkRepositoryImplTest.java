@@ -31,16 +31,16 @@ public class TruckParkRepositoryImplTest {
     @Test
     public void findById() {
         this.parkRepository.save(expectedPark);
-        TruckPark actualTruckPark = parkRepository.getOne(1L);
+        TruckPark actualTruckPark = parkRepository.findById(1L).get();
         log.info("Test to find the TruckPark with id = 1: "+actualTruckPark );
         Assert.assertNotNull(actualTruckPark);
-        Assert.assertEquals(expectedPark.getId(), actualTruckPark.getId());
+        Assert.assertEquals(expectedPark, actualTruckPark);
     }
 
     @Test
     public void save() {
         this.parkRepository.save(expectedPark);
-        TruckPark actualTruckPark =  parkRepository.getOne(expectedPark.getId());
+        TruckPark actualTruckPark = parkRepository.findById(expectedPark.getId()).get();
         log.info("Test to save the TruckPark: "+actualTruckPark);
         Assertions.assertEquals(expectedPark, actualTruckPark);
     }
@@ -48,10 +48,10 @@ public class TruckParkRepositoryImplTest {
     @Test
     public void delete() {
         this.parkRepository.save(expectedPark);
-        TruckPark actualPark =  parkRepository.getOne(expectedPark.getId());
-        this.parkRepository.delete(actualPark);
-        log.info("Test to delete the TruckPark with id = 1: "+actualPark);
-        Optional<TruckPark> deletedPark = parkRepository.findById(actualPark.getId());
+        TruckPark actualTruckPark = parkRepository.findById(expectedPark.getId()).get();
+        this.parkRepository.delete(actualTruckPark);
+        log.info("Test to delete the TruckPark with id = 1: "+actualTruckPark);
+        Optional<TruckPark> deletedPark = parkRepository.findById(actualTruckPark.getId());
         Assertions.assertFalse(deletedPark.isPresent());
     }
 

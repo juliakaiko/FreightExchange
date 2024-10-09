@@ -31,16 +31,16 @@ public class FreightForwarderRepositoryImplTest {
     @Test
     public void findById() {
         this.forwarderRepository.save(expectedForwarder);
-        FreightForwarder actualForwarder = forwarderRepository.getOne(1L);
+        FreightForwarder actualForwarder = forwarderRepository.findById(1L).get();
         log.info("Test to find the FreightForwarder with id = 1: "+actualForwarder);
         Assert.assertNotNull(actualForwarder);
-        Assert.assertEquals(expectedForwarder.getId(), actualForwarder.getId());
+        Assert.assertEquals(expectedForwarder, actualForwarder);
     }
 
     @Test
     public void save() {
         this.forwarderRepository.save(expectedForwarder);
-        FreightForwarder actualForwarder =  forwarderRepository.getOne(expectedForwarder.getId());
+        FreightForwarder actualForwarder =  forwarderRepository.findById(expectedForwarder.getId()).get();
         log.info("Test to save the FreightForwarder: "+actualForwarder);
         Assertions.assertEquals(expectedForwarder, actualForwarder);
     }
@@ -48,7 +48,7 @@ public class FreightForwarderRepositoryImplTest {
     @Test
     public void delete() {
         this.forwarderRepository.save(expectedForwarder);
-        FreightForwarder actualForwarder =  forwarderRepository.getOne(expectedForwarder.getId());
+        FreightForwarder actualForwarder =  forwarderRepository.findById(expectedForwarder.getId()).get();
         forwarderRepository.delete(actualForwarder);
         log.info("Test to delete the  FreightForwarder with id = 1: "+actualForwarder);
         Optional< FreightForwarder> deletedForwarder = forwarderRepository.findById(actualForwarder.getId());

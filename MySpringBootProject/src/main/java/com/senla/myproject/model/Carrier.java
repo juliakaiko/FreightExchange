@@ -34,9 +34,9 @@ public class Carrier implements Serializable { //
     // у перевозчика м.б. много экспедиторов, так и экспедитор может работать на несколько фирм
     @ManyToMany(fetch = FetchType.LAZY, cascade =
             {
-                    CascadeType.DETACH,
+                    //CascadeType.DETACH,
                     CascadeType.MERGE,
-                    CascadeType.REFRESH,
+                    //CascadeType.REFRESH,
                     CascadeType.PERSIST
             })
     @JoinTable(
@@ -47,9 +47,23 @@ public class Carrier implements Serializable { //
     @JsonIgnore
     private Set<CarrierManager> carrierManagers= new HashSet<>();
 
-    /// у перевозчика м.б. только один автопарк и наоборот
-    @OneToOne(mappedBy = "carrier", cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY, orphanRemoval = true)
+    /// у перевозчика м.б. только один автопарк и наоборот //CascadeType.REFRESH
+    @OneToOne(mappedBy = "carrier", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnore
     private TruckPark park;
+
+
+    //?Оставить
+/*    public void addPark(TruckPark park) {
+        park.setCarrier(this);
+        this.park = park;
+    }
+
+    public void removePark() {
+        if (park != null) {
+            park.setCarrier(null);
+            this.park = null;
+        }
+    }*/
 
 }

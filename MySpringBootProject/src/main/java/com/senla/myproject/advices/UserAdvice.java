@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice (annotations = UserExceptionHandler.class)
 public class UserAdvice {
 
-    @ExceptionHandler({EntityNotFoundException.class})
+    @ExceptionHandler({EntityNotFoundException.class, NoSuchElementException.class})
     public ResponseEntity<ErrorItem> handle(EntityNotFoundException e) {
         ErrorItem error = new ErrorItem();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

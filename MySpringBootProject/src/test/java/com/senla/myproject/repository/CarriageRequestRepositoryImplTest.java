@@ -31,16 +31,16 @@ public class CarriageRequestRepositoryImplTest {
     @Test
     public void findById() {
         this.orderRepository.save(expectedOrder);
-        CarriageRequest actualOrder = orderRepository.getOne(1L);
+        CarriageRequest actualOrder = orderRepository.findById(1L).get();
         log.info("Test to find the Order with id = 1: "+actualOrder);
         Assert.assertNotNull(actualOrder);
-        Assert.assertEquals(expectedOrder.getId(), actualOrder.getId());
+        Assert.assertEquals(expectedOrder, actualOrder);
     }
 
     @Test
     public void save() {
         this.orderRepository.save(expectedOrder);
-        CarriageRequest actualOrder =  orderRepository.getOne(expectedOrder.getId());
+        CarriageRequest actualOrder =  orderRepository.findById(expectedOrder.getId()).get();
         log.info("Test to save the Order: "+actualOrder);
         Assertions.assertEquals(expectedOrder, actualOrder);
     }
@@ -48,7 +48,7 @@ public class CarriageRequestRepositoryImplTest {
     @Test
     public void delete() {
         this.orderRepository.save(expectedOrder);
-        CarriageRequest actualOrder =  orderRepository.getOne(expectedOrder.getId());
+        CarriageRequest actualOrder =  orderRepository.findById(expectedOrder.getId()).get();
         orderRepository.delete(actualOrder);
         log.info("Test to delete the Order with id = 1: "+actualOrder);
         Optional<CarriageRequest> deletedOrder =orderRepository.findById(expectedOrder.getId());

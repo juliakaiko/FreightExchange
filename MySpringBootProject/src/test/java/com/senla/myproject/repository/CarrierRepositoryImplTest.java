@@ -31,16 +31,16 @@ public class CarrierRepositoryImplTest {
     @Test
     public void findById() {
         this.carrierRepository.save(expectedCarrier);
-        Carrier actualCarrier = carrierRepository.getOne(1L);
+        Carrier actualCarrier = carrierRepository.findById(1L).get();
         log.info("Test to find the Carrier with id = 1: "+actualCarrier);
         Assert.assertNotNull(actualCarrier);
-        Assert.assertEquals(expectedCarrier.getId(), actualCarrier.getId());
+        Assert.assertEquals(expectedCarrier, actualCarrier);
     }
 
     @Test
     public void save() {
         this.carrierRepository.save(expectedCarrier);
-        Carrier actualCarrier =  carrierRepository.getOne(expectedCarrier.getId());
+        Carrier actualCarrier =  carrierRepository.findById(expectedCarrier.getId()).get();
         log.info("Test to save the Carrier: "+actualCarrier);
         Assertions.assertEquals(expectedCarrier, actualCarrier);
     }
@@ -48,7 +48,7 @@ public class CarrierRepositoryImplTest {
     @Test
     public void delete() {
         this.carrierRepository.save(expectedCarrier);
-        Carrier actualCarrier =  carrierRepository.getOne(expectedCarrier.getId());
+        Carrier actualCarrier =  carrierRepository.findById(expectedCarrier.getId()).get();
         carrierRepository.delete(actualCarrier);
         log.info("Test to delete the Carrier with id = 1: "+expectedCarrier);
         Optional<Carrier> deletedCarrier = carrierRepository.findById(actualCarrier.getId());

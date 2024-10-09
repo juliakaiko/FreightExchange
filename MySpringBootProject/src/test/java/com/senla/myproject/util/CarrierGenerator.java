@@ -1,6 +1,5 @@
 package com.senla.myproject.util;
 
-import com.senla.myproject.model.CarriageRequest;
 import com.senla.myproject.model.Carrier;
 import lombok.experimental.UtilityClass;
 

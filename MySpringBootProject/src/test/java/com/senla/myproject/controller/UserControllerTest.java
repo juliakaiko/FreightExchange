@@ -3,7 +3,7 @@ package com.senla.myproject.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.senla.myproject.dto.*;
-import com.senla.myproject.mapper.EntityMapper;
+import com.senla.myproject.mapper.*;
 import com.senla.myproject.model.*;
 import com.senla.myproject.service.FreightExchangeService;
 import com.senla.myproject.util.*;
@@ -42,17 +42,10 @@ public class UserControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private EntityMapper entityMapper;
-
-    @BeforeEach
-    public void setUp(){
-        entityMapper = new EntityMapper();
-    }
-
     @Test
     public void getCarrierManager_whenCorrect_thenOk() throws Exception {
         CarrierManager request = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto response = entityMapper.managerToDTO(request);
+        CarrierManagerDto response = CarrierManagerMapper.INSTANSE.toDTO(request);
         when(service.findCarrierManagerById(ENTITY_ID)).thenReturn(response);
 
         mockMvc.perform(get("/managers/" + ENTITY_ID) // HTTP Method = GET
@@ -86,10 +79,10 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
-    @Test //!!!!
+    @Test
     public void deleteCarrierManager_whenCorrect_thenOk() throws Exception {
         CarrierManager request = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto response = entityMapper.managerToDTO(request);
+        CarrierManagerDto response = CarrierManagerMapper.INSTANSE.toDTO(request);
 
         when(service.deleteCarrierManagerById(ENTITY_ID)).thenReturn(response);
 
@@ -107,7 +100,7 @@ public class UserControllerTest {
     @Test
     public void getCarriageRequest_whenCorrect_thenOk() throws Exception{
         CarriageRequest request = CarriageRequestGenerator.generateOrder();
-        CarriageRequestDto response = entityMapper.carriageRequestToDTO(request);
+        CarriageRequestDto response = CarriageRequestMapper.INSTANSE.toDTO(request);
         when(service.findOrderById(ENTITY_ID)).thenReturn(response);
 
         this.mockMvc.perform(get("/orders/" + ENTITY_ID)
@@ -145,7 +138,7 @@ public class UserControllerTest {
     @Test
     public void deleteCarriageRequest_whenCorrect_thenOk() throws Exception{
         CarriageRequest request = CarriageRequestGenerator.generateOrder();
-        CarriageRequestDto response = entityMapper.carriageRequestToDTO(request);
+        CarriageRequestDto response = CarriageRequestMapper.INSTANSE.toDTO(request);
         when(service.findOrderById(ENTITY_ID)).thenReturn(response);
 
         mockMvc.perform(delete("/orders/" + ENTITY_ID) // HTTP Method = DELETE
@@ -162,7 +155,7 @@ public class UserControllerTest {
     @Test
     public void getCarrier_whenCorrect_thenOk() throws Exception {
         Carrier request = CarrierGenerator.generateCarrier();
-        CarrierDto response = entityMapper.carrierToDTO(request);
+        CarrierDto response = CarrierMapper.INSTANSE.toDTO(request);
 
         when(service.findCarrierById(ENTITY_ID)).thenReturn(response);
 
@@ -201,7 +194,7 @@ public class UserControllerTest {
     @Test//!!!
     public void deleteCarrier_whenCorrect_thenOk() throws Exception {
         Carrier request = CarrierGenerator.generateCarrier();
-        CarrierDto response = entityMapper.carrierToDTO(request);
+        CarrierDto response = CarrierMapper.INSTANSE.toDTO(request);
 
         when(service.deleteCarrierById(ENTITY_ID)).thenReturn(response);
 
@@ -219,7 +212,7 @@ public class UserControllerTest {
     @Test
     public void getFreightForwarder_whenCorrect_thenOk() throws Exception {
         FreightForwarder request = FreightForwarderGenerator.generateFreightForwarder();
-        FreightForwarderDto response = entityMapper.forwarderToDTO(request);
+        FreightForwarderDto response = FreightForwarderMapper.INSTANSE.toDTO(request);
 
         when(service.findFreightForwarderById(ENTITY_ID)).thenReturn(response);
 
@@ -258,7 +251,7 @@ public class UserControllerTest {
     @Test ///!!!!
     public void deleteFreightForwarder_whenCorrect_thenOk() throws Exception {
         FreightForwarder request = FreightForwarderGenerator.generateFreightForwarder();
-        FreightForwarderDto response = entityMapper.forwarderToDTO(request);
+        FreightForwarderDto response = FreightForwarderMapper.INSTANSE.toDTO(request);
 
         when(service.deleteFreightForwarderById(ENTITY_ID)).thenReturn(response);
 
@@ -276,7 +269,7 @@ public class UserControllerTest {
     @Test
     public void getTruckPark_whenCorrect_thenOk() throws Exception {
         TruckPark request = TruckParkGenerator.generateTruckPark();
-        TruckParkDto response = entityMapper.truckParkToDTO(request);
+        TruckParkDto response = TruckParkMapper.INSTANSE.toDTO(request);
 
         when(service.findTruckParkById(ENTITY_ID)).thenReturn(response);
 
@@ -312,10 +305,10 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
-    @Test //!!!
+    @Test
     public void deleteTruckPark_whenCorrect_thenOk() throws Exception {
         TruckPark request = TruckParkGenerator.generateTruckPark();
-        TruckParkDto response = entityMapper.truckParkToDTO(request);
+        TruckParkDto response = TruckParkMapper.INSTANSE.toDTO(request);
 
         when(service.deleteTruckParkById(ENTITY_ID)).thenReturn(response);
 

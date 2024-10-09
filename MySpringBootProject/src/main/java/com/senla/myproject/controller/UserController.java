@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController /* объединяет  @Controller и @ResponseBody => не только помечает класс как Spring MVC Controller,
-но и автоматически преобразует возвращаемые контроллером данные в формат JSON*/
+//но и автоматически преобразует возвращаемые контроллером данные в формат JSON*/
 @RequestMapping("/")
 @RequiredArgsConstructor
 @Slf4j // для логирования
@@ -34,10 +34,20 @@ public class UserController {
     @GetMapping("/managers/{id}")
     public ResponseEntity  getCarrierManager (@PathVariable("id") Long id) {
         log.info("FROM UserController => Request to find the CarrierManager by id: "+id);
-        CarrierManagerDto managerDTO = service.findCarrierManagerById(id);
-        if (managerDTO == null)
+        CarrierManagerDto managerDto = service.findCarrierManagerById(id);
+        if (managerDto == null)
             return new ResponseEntity("CarrierManager with id: " + id + " not found", HttpStatus.NOT_FOUND);
-        return new ResponseEntity(managerDTO, HttpStatus.OK);
+        return new ResponseEntity(managerDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/managers/search")
+    //http://localhost:8080/managers/search?email=kaiko%40gmail.com
+    public ResponseEntity  getCarrierManagerWithEntityGraphByEmail (@RequestParam String email) {
+        log.info("FROM UserController => Request to find the CarrierManager by email: "+email);
+        CarrierManagerDto managerDto = service.findCarrierManagerWithEntityGraphByEmail(email);
+        if (managerDto == null)
+            return new ResponseEntity("CarrierManager with email: " + email + " not found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity(managerDto, HttpStatus.OK);
     }
 
     @GetMapping("/managers")
@@ -46,24 +56,34 @@ public class UserController {
         return service.findAllCarrierManagers();
     }
 
+    @PutMapping ("/managers")
+    public ResponseEntity updateCarrierManager (@RequestBody CarrierManagerDto managerDto){
+        log.info("FROM RegistrationController => Request to update the CarrierManager: "+managerDto);
+        CarrierManagerDto managerDto2 = service.findCarrierManagerById(managerDto.getId());
+        managerDto.setCarriers(managerDto2.getCarriers());
+        managerDto.setOrders(managerDto2.getOrders());
+        service.saveCarrierManager(managerDto);
+        return new ResponseEntity (managerDto, HttpStatus.OK);
+    }
+
     @DeleteMapping("/managers/{id}")
     public ResponseEntity  deleteCarrierManager (@PathVariable("id") Long id){
         log.info("FROM UserController => Request to delete the CarrierManager by id: "+id);
-        CarrierManagerDto managerDTO = service.findCarrierManagerById(id);
+        CarrierManagerDto managerDto = service.findCarrierManagerById(id);
         service.deleteCarrierManagerById(id);
-        if (managerDTO == null)
+        if (managerDto == null)
             return new ResponseEntity ("CarrierManager with id: " +id+ " not found",HttpStatus.NOT_FOUND);
-        return new ResponseEntity (managerDTO,HttpStatus.OK);
+        return new ResponseEntity (managerDto,HttpStatus.OK);
     }
 
     //Order
     @GetMapping("/orders/{id}")
     public ResponseEntity  getCarriageRequest (@PathVariable("id") Long id) {
         log.info("FROM UserController => Request to find the CarriageRequest by id: "+id);
-        CarriageRequestDto orderDTO = service.findOrderById(id);
-        if (orderDTO == null)
+        CarriageRequestDto orderDto = service.findOrderById(id);
+        if (orderDto == null)
             return new ResponseEntity("Order with id: " + id + " not found", HttpStatus.NOT_FOUND);
-        return new ResponseEntity(orderDTO, HttpStatus.OK);
+        return new ResponseEntity(orderDto, HttpStatus.OK);
     }
 
     @GetMapping("/orders")
@@ -72,14 +92,24 @@ public class UserController {
         return service.findAllOrders();
     }
 
+    @PutMapping("/orders")
+    public ResponseEntity updateCarriageRequest (@RequestBody CarriageRequestDto orderDto){
+        log.info("FROM RegistrationController => Request to update the CarriageRequest: "+orderDto);
+        CarriageRequestDto orderDto2 = service.findOrderById(orderDto.getId());
+        orderDto.setForwarder(orderDto2.getForwarder());
+        orderDto.setManager(orderDto2.getManager());
+        service.saveOrder(orderDto);
+        return new ResponseEntity (orderDto, HttpStatus.OK);
+    }
+
     @DeleteMapping("/orders/{id}")
     public ResponseEntity  deleteCarriageRequest (@PathVariable("id") Long id) {
         log.info("FROM UserController => Request to delete the CarriageRequest by id: "+id);
-        CarriageRequestDto orderDTO = service.findOrderById(id);
+        CarriageRequestDto orderDto = service.findOrderById(id);
         service.deleteOrderById(id);
-        if (orderDTO == null)
+        if (orderDto == null)
             return new ResponseEntity("Order with id: " + id + " not found", HttpStatus.NOT_FOUND);
-        return new ResponseEntity(orderDTO, HttpStatus.OK);
+        return new ResponseEntity(orderDto, HttpStatus.OK);
     }
 
     //Carrier
@@ -96,6 +126,15 @@ public class UserController {
     public List<Carrier> getAllCarriers(){
         log.info("FROM UserController => Request to find all Carriers");
         return service.findAllCarriers();
+    }
+
+    @PutMapping("/carriers")
+    public ResponseEntity updateCarrier (@RequestBody CarrierDto carrierDto){
+        log.info("FROM RegistrationController => Request to update the Carrier: "+carrierDto);
+        CarrierDto carrierDto2 = service.findCarrierById(carrierDto.getId());
+        carrierDto.setPark(carrierDto2.getPark());
+        service.saveCarrier(carrierDto);
+        return new ResponseEntity (carrierDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/carriers/{id}")
@@ -124,6 +163,15 @@ public class UserController {
         return service.findAllForwarders();
     }
 
+    @PutMapping("/forwarders")
+    public ResponseEntity updateFreightForwarder (@RequestBody FreightForwarderDto forwarderDto){
+        log.info("FROM RegistrationController => Request to update the FreightForwarder: "+forwarderDto);
+        FreightForwarderDto forwarderDto2 = service.findFreightForwarderById(forwarderDto.getId());
+        forwarderDto.setOrders(forwarderDto2.getOrders());
+        service.saveFreightForwarder(forwarderDto);
+        return new ResponseEntity (forwarderDto, HttpStatus.OK);
+    }
+
     @DeleteMapping("/forwarders/{id}")
     public ResponseEntity  deleteFreightForwarder (@PathVariable("id") Long id) {
         log.info("FROM UserController => Request to delete the FreightForwarder by id: "+id);
@@ -150,6 +198,15 @@ public class UserController {
         return service.findAllTruckParks();
     }
 
+    @PutMapping("/truck_parks")
+    public ResponseEntity updateTruckPark (@RequestBody TruckParkDto parkDto){
+        log.info("FROM RegistrationController => Request to update the TruckPark: "+parkDto);
+        TruckParkDto parkDto2 =  service.findTruckParkById(parkDto.getId());
+        parkDto.setCarrier(parkDto2.getCarrier());
+        service.saveTruckPark(parkDto);
+        return new ResponseEntity (parkDto, HttpStatus.OK);
+    }
+
     @DeleteMapping("/truck_parks/{id}")
     public ResponseEntity  deleteTruckPark (@PathVariable("id") Long id) {
         log.info("FROM UserController => Request to delete the TruckPark by id: "+id);
@@ -159,6 +216,4 @@ public class UserController {
             return new ResponseEntity("TruckPark with id: " + id + " not found", HttpStatus.NOT_FOUND);
         return new ResponseEntity(parkDto, HttpStatus.OK);
     }
-
-
 }

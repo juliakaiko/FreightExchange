@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"orders"})
 @ToString(exclude = {"orders"})
-@Table(name = "freightforwarder") // говорим Hibernate, с какой именно таблицей необходимо связать (map) данный класс.
+@Table(name = "freight_forwarder") // говорим Hibernate, с какой именно таблицей необходимо связать (map) данный класс.
 @Entity (name = "FreightForwarder") // на этот объект будет мапиться SQL
 public class FreightForwarder implements Serializable {
 
@@ -40,11 +40,9 @@ public class FreightForwarder implements Serializable {
     @JsonIgnore
     private Set<CarriageRequest> orders = new HashSet<>();
 
-/*
     @PreRemove
     private void preRemove() {
         if (this.orders != null)
             orders.forEach(order -> order.setForwarder(null));
     }
-*/
 }

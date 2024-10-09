@@ -1,7 +1,6 @@
 package com.senla.myproject.util;
 
 import com.senla.myproject.model.CarriageRequest;
-import com.senla.myproject.model.CarrierManager;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass //делает класс статическим и запрещает его наследование.

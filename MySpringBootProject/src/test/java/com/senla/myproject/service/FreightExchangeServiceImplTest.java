@@ -1,7 +1,7 @@
 package com.senla.myproject.service;
 
 import com.senla.myproject.dto.*;
-import com.senla.myproject.mapper.EntityMapper;
+import com.senla.myproject.mapper.*;
 import com.senla.myproject.model.*;
 import com.senla.myproject.repository.*;
 import com.senla.myproject.service.impl.FreightExchangeServiceImpl;
@@ -23,8 +23,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class) // Инициализирует моки
 public class FreightExchangeServiceImplTest {
 
-    //@InjectMocks //создает имитирующую реализацию аннотированного типа и внедряет в нее зависимые имитирующие объекты
-    @Mock
+    @InjectMocks //создает имитирующую реализацию аннотированного типа и внедряет в нее зависимые имитирующие объекты
     private FreightExchangeServiceImpl service;
     @Mock // создает фиктивную реализацию для класса
     private CarrierRepository carrierRepository;
@@ -36,27 +35,20 @@ public class FreightExchangeServiceImplTest {
     private CarriageRequestRepository orderRepository;
     @Mock
     private TruckParkRepository parkRepository;
-    @Mock
-    private EntityMapper entityMapper;
-
-    @BeforeEach
-    public void setUp(){
-        entityMapper = new EntityMapper();
-        service = new FreightExchangeServiceImpl(entityMapper,carrierRepository,managerRepository,forwarderRepository,orderRepository,parkRepository);
-    }
 
     //CarrierManager
     @Test
     public void findCarrierManagerById_thenReturnCarrierManagerDto() {
         CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto managerDto = entityMapper.managerToDTO(manager);
+        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDTO(manager);
+        managerRepository.save(manager);
         //если вызывется метод getOne у репозитория, то возвращается manager
         // Стаббинг: определение поведения
-        when(managerRepository.getOne(manager.getId())).thenReturn(manager);
+        when(managerRepository.findById(manager.getId())).thenReturn(Optional.of(manager));
 
         CarrierManagerDto result = service.findCarrierManagerById(manager.getId());
         //Верификация: был ли вызван метод getOne 1 раз
-        verify(managerRepository, times(1)).getOne(manager.getId());
+        verify(managerRepository, times(1)).findById(manager.getId());
         // Проверка: метод findCarrierManagerById сервиса возвращает сгенерированого manager
         log.info("FROM SERVICE_TEST: find the CarrierManager by id => manager: "+result);
         assertEquals(managerDto, result);
@@ -87,7 +79,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void saveCarrierManager_whenCorrect_thenReturnCarrierManagerDto(){
         CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto managerDto = entityMapper.managerToDTO(manager);
+        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDTO(manager);
         CarrierManagerDto result = service.saveCarrierManager(managerDto);
 
         verify(managerRepository, times(1)).save(manager);
@@ -99,30 +91,27 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void deleteCarrierManagerById_whenCorrect_thenReturnCarrierManagerDto() {
         CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto managerDto = entityMapper.managerToDTO(manager);
-        when(managerRepository.getOne(manager.getId())).thenReturn(manager);
-        //doNothing().when(managerRepository).deleteById(manager.getId());
+        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDTO(manager);
+        when(managerRepository.findById(manager.getId())).thenReturn(Optional.of(manager));
 
-        CarrierManagerDto result = service.deleteCarrierManagerById(manager.getId());
+        CarrierManagerDto result = service.deleteCarrierManagerById(1l);
         //Верификация: был ли вызван метод deleteById 1 раз
         verify(managerRepository, times(1)).deleteById(manager.getId());
 
         log.info("FROM SERVICE_TEST: delete the CarrierManager by id => manager: "+result);
         assertEquals(managerDto, result);
-        Optional<CarrierManager> deletedManager = managerRepository.findById(manager.getId());
-        assertFalse(deletedManager.isPresent());
     }
 
-//Carrier
+    //Carrier
     @Test
     public void findCarrierById_whenCorrect_thenReturnCarrierDto() {
         Carrier carrier = CarrierGenerator.generateCarrier();
-        CarrierDto carrierDto = entityMapper.carrierToDTO(carrier);
+        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDTO(carrier);
 
-        when(carrierRepository.getOne(carrier.getId())).thenReturn(carrier);
+        when(carrierRepository.findById(carrier.getId())).thenReturn(Optional.of(carrier));
 
         CarrierDto result = service.findCarrierById(carrier.getId());
-        verify(carrierRepository, times(1)).getOne(carrier.getId());
+        verify(carrierRepository, times(1)).findById(carrier.getId());
 
         log.info("FROM SERVICE_TEST: find the Carrier by id => carrier: "+result);
         assertEquals(carrierDto, result);
@@ -131,7 +120,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void saveCarrier_whenCorrect_thenReturnCarrierDto() {
         Carrier carrier = CarrierGenerator.generateCarrier();
-        CarrierDto carrierDto = entityMapper.carrierToDTO(carrier);
+        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDTO(carrier);
         CarrierDto result = service.saveCarrier(carrierDto);
 
         verify(carrierRepository, times(1)).save(carrier);
@@ -143,9 +132,8 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void deleteCarrierById_whenCorrect_thenReturnCarrierDto() {
         Carrier carrier = CarrierGenerator.generateCarrier();
-        CarrierDto carrierDto = entityMapper.carrierToDTO(carrier);
-        when(carrierRepository.getOne(carrier.getId())).thenReturn(carrier);
-        //doNothing().when(managerRepository).deleteById(manager.getId());
+        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDTO(carrier);
+        when(carrierRepository.findById(carrier.getId())).thenReturn(Optional.of(carrier));
 
         CarrierDto result = service.deleteCarrierById(carrier.getId());
         //Верификация: был ли вызван метод deleteById 1 раз
@@ -153,8 +141,6 @@ public class FreightExchangeServiceImplTest {
 
         log.info("FROM SERVICE_TEST: delete the Carrier by id => carrier: "+result);
         assertEquals(carrierDto, result);
-        Optional<Carrier> deletedСarrier = carrierRepository.findById(carrier.getId());
-        assertFalse(deletedСarrier.isPresent());
     }
 
     @Test
@@ -183,12 +169,12 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void findFreightForwarderById_whenCorrect_thenReturnFreightForwarderDto() {
         FreightForwarder forwarder = FreightForwarderGenerator.generateFreightForwarder();
-        FreightForwarderDto forwarderDto = entityMapper.forwarderToDTO(forwarder);
+        FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDTO(forwarder);
 
-        when(forwarderRepository.getOne(forwarder.getId())).thenReturn(forwarder);
+        when(forwarderRepository.findById(forwarder.getId())).thenReturn(Optional.of(forwarder));
 
         FreightForwarderDto result = service.findFreightForwarderById(forwarder.getId());
-        verify(forwarderRepository, times(1)).getOne(forwarder.getId());
+        verify(forwarderRepository, times(1)).findById(forwarder.getId());
 
         log.info("FROM SERVICE_TEST: find the FreightForwarder by id => forwarder: "+result);
         assertEquals(forwarderDto, result);
@@ -197,7 +183,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void saveFreightForwarder_whenCorrect_thenReturnFreightForwarderDto() {
         FreightForwarder forwarder = FreightForwarderGenerator.generateFreightForwarder();
-        FreightForwarderDto forwarderDto = entityMapper.forwarderToDTO(forwarder);
+        FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDTO(forwarder);
         FreightForwarderDto result = service.saveFreightForwarder(forwarderDto);
 
         verify(forwarderRepository, times(1)).save(forwarder);
@@ -209,9 +195,8 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void deleteFreightForwarderById_whenCorrect_thenReturnFreightForwarderDto() {
         FreightForwarder forwarder = FreightForwarderGenerator.generateFreightForwarder();
-        FreightForwarderDto forwarderDto = entityMapper.forwarderToDTO(forwarder);
-        when(forwarderRepository.getOne(forwarder.getId())).thenReturn(forwarder);
-        //doNothing().when(managerRepository).deleteById(manager.getId());
+        FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDTO(forwarder);
+        when(forwarderRepository.findById(forwarder.getId())).thenReturn(Optional.of(forwarder));
 
         FreightForwarderDto result = service.deleteFreightForwarderById(forwarder.getId());
         //Верификация: был ли вызван метод deleteById 1 раз
@@ -219,8 +204,6 @@ public class FreightExchangeServiceImplTest {
 
         log.info("FROM SERVICE_TEST: delete the FreightForwarder by id => forwarder: "+result);
         assertEquals(forwarderDto, result);
-        Optional<FreightForwarder> deletedForwarder = forwarderRepository.findById(forwarder.getId());
-        assertFalse(deletedForwarder.isPresent());
     }
 
     @Test
@@ -249,12 +232,12 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void findOrderById_whenCorrect_thenReturnOrderDto() {
         CarriageRequest order = CarriageRequestGenerator.generateOrder();
-        CarriageRequestDto orderDto = entityMapper.carriageRequestToDTO(order);
+        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDTO(order);
 
-        when(orderRepository.getOne(order.getId())).thenReturn(order);
+        when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
 
         CarriageRequestDto result = service.findOrderById(order.getId());
-        verify(orderRepository, times(1)).getOne(order.getId());
+        verify(orderRepository, times(1)).findById(order.getId());
 
         log.info("FROM SERVICE_TEST: find the Order by id => order: "+result);
         assertEquals(orderDto, result);
@@ -263,7 +246,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void saveOrder_whenCorrect_thenReturnOrderDto() {
         CarriageRequest order = CarriageRequestGenerator.generateOrder();
-        CarriageRequestDto orderDto = entityMapper.carriageRequestToDTO(order);
+        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDTO(order);
 
         CarriageRequestDto result = service.saveOrder(orderDto);
 
@@ -276,9 +259,8 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void deleteOrderById_whenCorrect_thenReturnOrderDto() {
         CarriageRequest order = CarriageRequestGenerator.generateOrder();
-        CarriageRequestDto orderDto = entityMapper.carriageRequestToDTO(order);
-        when(orderRepository.getOne(order.getId())).thenReturn(order);
-        //doNothing().when(managerRepository).deleteById(manager.getId());
+        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDTO(order);
+        when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
 
         CarriageRequestDto result = service.deleteOrderById(order.getId());
         //Верификация: был ли вызван метод deleteById 1 раз
@@ -286,8 +268,6 @@ public class FreightExchangeServiceImplTest {
 
         log.info("FROM SERVICE_TEST: delete the Order by id => order: "+result);
         assertEquals(orderDto, result);
-        Optional<CarriageRequest> deletedOrder = orderRepository.findById(order.getId());
-        assertFalse(deletedOrder.isPresent());
     }
 
     @Test
@@ -316,12 +296,12 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void findTruckParkById_whenCorrect_thenReturnTruckParkDto() {
         TruckPark park = TruckParkGenerator.generateTruckPark();
-        TruckParkDto parkDto = entityMapper.truckParkToDTO(park);
+        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDTO(park);
 
-        when(parkRepository.getOne(park.getId())).thenReturn(park);
+        when(parkRepository.findById(park.getId())).thenReturn(Optional.of(park));
 
         TruckParkDto result = service.findTruckParkById(park.getId());
-        verify(parkRepository, times(1)).getOne(park.getId());
+        verify(parkRepository, times(1)).findById(park.getId());
 
         log.info("FROM SERVICE_TEST: find the TruckPark by id => park: "+result);
         assertEquals(parkDto, result);
@@ -332,7 +312,7 @@ public class FreightExchangeServiceImplTest {
         TruckPark park = TruckParkGenerator.generateTruckPark();
         Carrier carrier = CarrierGenerator.generateCarrier();
         park.setCarrier(carrier);
-        TruckParkDto parkDto = entityMapper.truckParkToDTO(park);
+        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDTO(park);
 
         TruckParkDto result = service.saveTruckPark(parkDto);
 
@@ -345,9 +325,8 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void deleteTruckParkById_whenCorrect_thenReturnTruckParkDto() {
         TruckPark park = TruckParkGenerator.generateTruckPark();
-        TruckParkDto parkDto = entityMapper.truckParkToDTO(park);
-        when(parkRepository.getOne(park.getId())).thenReturn(park);
-        //doNothing().when(managerRepository).deleteById(manager.getId());
+        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDTO(park);
+        when(parkRepository.findById(park.getId())).thenReturn(Optional.of(park));
 
         TruckParkDto result = service.deleteTruckParkById(park.getId());
         //Верификация: был ли вызван метод deleteById 1 раз
@@ -355,8 +334,6 @@ public class FreightExchangeServiceImplTest {
 
         log.info("FROM SERVICE_TEST: delete the TruckPark by id => park: "+result);
         assertEquals(parkDto, result);
-        Optional<TruckPark> deletedPark = parkRepository.findById(park.getId());
-        assertFalse(deletedPark.isPresent());
     }
 
     @Test

@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController/* объединяет  @Controller и @ResponseBody => не только помечает класс как Spring MVC Controller,
-но и автоматически преобразует возвращаемые контроллером данные в формат JSON*/
+//но и автоматически преобразует возвращаемые контроллером данные в формат JSON*/
 @RequiredArgsConstructor
 @RequestMapping("/")
 @Slf4j
@@ -19,40 +19,35 @@ public class RegistrationController {
 
     private final FreightExchangeService service;
 
-    //@PostMapping("/managers")
-    @RequestMapping(value="/managers", method = {RequestMethod.POST,RequestMethod.PUT})
+    @PostMapping("/managers")
     public ResponseEntity createCarrierManager (@RequestBody CarrierManagerDto managerDTO){
         log.info("FROM RegistrationController => Request to add new Carrier Manager: "+managerDTO);
         service.saveCarrierManager(managerDTO);
         return new ResponseEntity (managerDTO, HttpStatus.OK);
     }
 
-    //@PostMapping("/orders")
-    @RequestMapping(value="/orders", method = {RequestMethod.POST,RequestMethod.PUT})
+    @PostMapping("/orders")
     public ResponseEntity createCarriageRequest (@RequestBody CarriageRequestDto orderDTO){
         log.info("FROM RegistrationController => Request to add new Carriage Request: "+orderDTO);
         service.saveOrder(orderDTO);
         return new ResponseEntity (orderDTO, HttpStatus.OK);
     }
 
-    //@PostMapping("/carriers")
-    @RequestMapping(value="/carriers", method = {RequestMethod.POST,RequestMethod.PUT})
+    @PostMapping("/carriers")
     public ResponseEntity createCarrier (@RequestBody CarrierDto carrierDTO){
         log.info("FROM RegistrationController => Request to add new Carrier: "+carrierDTO);
         service.saveCarrier(carrierDTO);
         return new ResponseEntity (carrierDTO, HttpStatus.OK);
     }
 
-    //@PostMapping("/forwarders")
-    @RequestMapping(value="/forwarders", method = {RequestMethod.POST,RequestMethod.PUT})
+    @PostMapping("/forwarders")
     public ResponseEntity createFreightForwarder (@RequestBody FreightForwarderDto forwarderDTO){
         log.info("FROM RegistrationController => Request to add new Freight Forwarder: "+forwarderDTO);
         service.saveFreightForwarder(forwarderDTO);
         return new ResponseEntity (forwarderDTO, HttpStatus.OK);
     }
 
-    //@PostMapping("/truck_parks")
-    @RequestMapping(value="/truck_parks", method = {RequestMethod.POST,RequestMethod.PUT})
+    @PostMapping("/truck_parks")
     public ResponseEntity createTruckPark (@RequestBody TruckParkDto parkDTO){
         log.info("FROM RegistrationController => Request to add new Truck Park: "+parkDTO);
         service.saveTruckPark(parkDTO);

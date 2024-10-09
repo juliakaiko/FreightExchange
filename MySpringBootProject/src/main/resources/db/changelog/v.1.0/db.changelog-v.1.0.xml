@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+      http://www.liquibase.org/xml/ns/pro
+      http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd"
+        logicalFilePath="homework-2">
+
+    <changeSet id="homework-2_carrier" author="Julia Kaiko">
+        <preConditions>
+            <not>
+                <tableExists tableName="carrier"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="carrier">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="character varying (200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="character varying (200)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="homework-2_carrier_manager" author="Julia Kaiko">
+        <preConditions>
+            <not>
+                <tableExists tableName="carrier_manager"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="carrier_manager">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="surname" type="character varying (200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstname" type="character varying (200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="character varying (200)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="character varying(200)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="homework-2-carrier_managers" author="Julia Kaiko">
+        <preConditions>
+            <not>
+                <tableExists tableName="carrier_managers"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="carrier_managers">
+            <!-- <column name="id" type="BIGSERIAL" autoIncrement="true">
+                 <constraints primaryKey="true" nullable="false"/>
+             </column>-->
+            <column name="manager_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="carrier_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_manager"
+                                 baseTableName="carrier_managers" baseColumnNames="manager_id"
+                                 referencedTableName="carrier_manager" referencedColumnNames="id" />
+        <addForeignKeyConstraint constraintName="fk_carrier "
+                                 baseTableName="carrier_managers" baseColumnNames="carrier_id"
+                                 referencedTableName="carrier" referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="homework-2_freight_forwarder" author="Julia Kaiko">
+        <preConditions>
+            <not>
+                <tableExists tableName="freight_forwarder"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="freight_forwarder">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="surname" type="character varying(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstname" type="character varying(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="character varying(200)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="character varying(200)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="homework-2_carriage_request" author="Julia Kaiko">
+        <preConditions>
+            <not>
+                <tableExists tableName="carriage_request"/>
+            </not>
+        </preConditions>
+        <createTable tableName="carriage_request">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="order_name" type="character varying (200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_point" type="character varying (200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="finish_point" type="character varying (200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cargo" type="character varying (200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="freight" type="numeric">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="forwarder_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="manager_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_forwarder_for_orders"
+                                 baseTableName="carriage_request" baseColumnNames="forwarder_id"
+                                 referencedTableName="freight_forwarder" referencedColumnNames="id" />
+        <addForeignKeyConstraint constraintName="fk_manager_for_orders"
+                                 baseTableName="carriage_request" baseColumnNames="manager_id"
+                                 referencedTableName="carrier_manager" referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="homework-2_truckpark" author="Julia Kaiko">
+        <preConditions>
+            <not>
+                <tableExists tableName="truck_park"/>
+            </not>
+        </preConditions>
+        <createTable tableName="truck_park">
+            <column name="carrier_id" type="BIGSERIAL" autoIncrement="true">
+                <constraints nullable="false" foreignKeyName="fk_truck_parks" references="carrier(id)"/>
+            </column>
+            <column name="trucks_num" type="character varying (200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trucks_load_capacity" type="numeric">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="homework-2_create_indexes" author="Julia Kaiko">
+        <preConditions>
+            <tableExists tableName="carrier_manager"/>
+            <tableExists tableName="carriage_request"/>
+            <tableExists tableName="truck_park"/>
+        </preConditions>
+        <sql>
+            CREATE INDEX my_carrierIndx ON carrier_managers (carrier_id);
+            CREATE INDEX my_managerIndx ON carrier_managers (manager_id);
+            CREATE INDEX my_forwarderIndx_in_carriage_request ON carriage_request (forwarder_id);
+            CREATE INDEX my_carmanagerIndx_in_carriage_request ON carriage_request (manager_id);
+            CREATE INDEX my_truckParkIndx ON truck_park (carrier_id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="homework-2_carrier_fill_data" author="Julia Kaiko">
+        <preConditions>
+            <tableExists tableName="carrier"/>
+        </preConditions>
+        <sql>
+            INSERT INTO carrier (name, address) VALUES ('БугТрансКонтиненталь', 'Беларусь, г.Брест, ул. Лейтенанта Рябцева, 29А');
+            INSERT INTO carrier (name, address) VALUES ('КУРС', 'Россия, г.Печерск, ул. Автодорожная, 5');
+            INSERT INTO carrier (name, address) VALUES ('TIRPOL', 'Польша, г.Варшава, ул. Остробрамская, 101');
+        </sql>
+    </changeSet>
+
+    <changeSet id="homework-2_carrier_manager_fill_data" author="Julia Kaiko">
+        <preConditions>
+            <tableExists tableName="carrier_manager"/>
+        </preConditions>
+        <sql>
+            INSERT INTO carrier_manager (surname, firstname, email, password) VALUES ('Кайко', 'Юлия', 'kaiko@gmail.com', '12345');
+            INSERT INTO carrier_manager (surname, firstname, email, password) VALUES ('Иванов', 'Иван', 'ivanov@gmail.com', '23456');
+            INSERT INTO carrier_manager (surname, firstname, email, password) VALUES ('Петров', 'Петр', 'petrov@gmail.com', '34567');
+        </sql>
+    </changeSet>
+
+    <changeSet id="homework-2-carrier_managers_fill_data" author="Julia Kaiko">
+        <preConditions>
+            <tableExists tableName="carrier_managers"/>
+        </preConditions>
+        <sql>
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (1,1);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (1,2);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (1,3);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (2,1);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (2,2);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (3,1);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (3,2);
+        </sql>
+    </changeSet>
+
+    <changeSet id="homework-2_freight_freight_forwarder_fill_data" author="Julia Kaiko">
+        <preConditions>
+            <tableExists tableName="freight_forwarder"/>
+        </preConditions>
+        <sql>
+            INSERT INTO freight_forwarder (surname, firstname, email, password) VALUES ('Туминас', 'Мирослав', 'tuminas@gmail.com', '111111');
+            INSERT INTO freight_forwarder (surname, firstname, email, password) VALUES ('Калнини', 'Диана', 'kalnini@gmail.com', '22222');
+            INSERT INTO freight_forwarder (surname, firstname, email, password) VALUES ('Гинтаутас', 'Екатерина', 'gintaytas@gmail.com', '33333');
+        </sql>
+    </changeSet>
+
+    <changeSet id="homework-2_carriage_request_fill_data" author="Julia Kaiko">
+        <preConditions>
+            <tableExists tableName="carriage_request"/>
+        </preConditions>
+        <sql>
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('N-12345678', 'Варшава', 'Вустермак', 'товары IKEA', 900, true, 1, 3);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('N-87654321', 'Брест', 'Москва', 'Клей', 1700, true, 2, 2);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('N-32765487', 'Можайск', 'Брест', 'Каучук', 600, true, 2, 2);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('N-85632190', 'Брест', 'Владимир', 'Конфеты', 2000, false, 3, 3);
+        </sql>
+    </changeSet>
+
+    <changeSet id="homework-2_truck_parks_fill_data" author="Julia Kaiko">
+        <preConditions>
+            <tableExists tableName="truck_park"/>
+        </preConditions>
+        <sql>
+            INSERT INTO truck_park (carrier_id, trucks_num, trucks_load_capacity) VALUES (1, 100, 20);
+            INSERT INTO truck_park (carrier_id, trucks_num, trucks_load_capacity) VALUES (2, 10, 20);
+            INSERT INTO truck_park (carrier_id, trucks_num, trucks_load_capacity) VALUES (3, 6, 20);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

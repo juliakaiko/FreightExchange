@@ -12,6 +12,8 @@ public interface FreightExchangeService {
     List<CarrierManager> findAllCarrierManagers();
     CarrierManagerDto saveCarrierManager(CarrierManagerDto userDTO);
     CarrierManagerDto deleteCarrierManagerById(Long id);
+    //EntityGraph
+    CarrierManagerDto findCarrierManagerWithEntityGraphByEmail(String email);
 
 /*    CarrierManagerDTO findCarrierManagerWithJoinFetchById(Long id);
     CarrierManagerDTO findCarrierManagerWithCriteriaById(Long id);
