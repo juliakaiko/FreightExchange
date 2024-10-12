@@ -8,9 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CarrierRepository extends JpaRepository<Carrier, Long> {
 
-   /* @Override
-    Carrier getOne(Long aLong);
-
-    @Override
-    void deleteById(Long aLong);*/
 }

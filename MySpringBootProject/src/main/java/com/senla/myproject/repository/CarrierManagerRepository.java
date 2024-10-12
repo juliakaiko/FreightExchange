@@ -10,13 +10,6 @@ import java.util.Optional;
 @Repository
 public interface CarrierManagerRepository extends JpaRepository<CarrierManager, Long> {
 
-   /* @Override
-    CarrierManager getOne(Long aLong);
-
-    @Override
-    void deleteById(Long aLong);
-*/
-   //EntityGraph
     @EntityGraph(value = "carrier_manager_entity_graph")
     CarrierManager findCarrierManagerWithEntityGraphByEmail(String email);
 

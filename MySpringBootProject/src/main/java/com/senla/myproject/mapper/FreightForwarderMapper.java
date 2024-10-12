@@ -1,8 +1,6 @@
 package com.senla.myproject.mapper;
 
-import com.senla.myproject.dto.CarrierManagerDto;
 import com.senla.myproject.dto.FreightForwarderDto;
-import com.senla.myproject.model.CarrierManager;
 import com.senla.myproject.model.FreightForwarder;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;

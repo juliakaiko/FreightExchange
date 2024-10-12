@@ -6,13 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CarriageRequestRepository extends JpaRepository<CarriageRequest, Long> {
-/*
-
-    @Override
-    CarriageRequest getOne(Long aLong);
-
-    @Override
-    void deleteById(Long aLong);
-*/
 
 }

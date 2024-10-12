@@ -8,9 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FreightForwarderRepository extends JpaRepository<FreightForwarder, Long> {
 
-   /* @Override
-    FreightForwarder getOne(Long aLong);
-
-    @Override
-    void deleteById(Long aLong);*/
 }

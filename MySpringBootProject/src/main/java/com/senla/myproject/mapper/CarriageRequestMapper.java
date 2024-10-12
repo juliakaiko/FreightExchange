@@ -1,16 +1,13 @@
 package com.senla.myproject.mapper;
 
 import com.senla.myproject.dto.CarriageRequestDto;
-import com.senla.myproject.dto.CarrierManagerDto;
 import com.senla.myproject.model.CarriageRequest;
-import com.senla.myproject.model.CarrierManager;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;
 
-@Mapper//(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper
 public interface CarriageRequestMapper {
 
     CarriageRequestMapper INSTANSE = Mappers.getMapper(CarriageRequestMapper.class);

@@ -7,26 +7,36 @@ import com.senla.myproject.mapper.*;
 import com.senla.myproject.model.*;
 import com.senla.myproject.service.FreightExchangeService;
 import com.senla.myproject.util.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultHandler;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @Slf4j
 @WebMvcTest(controllers = UserController.class)
@@ -46,6 +56,8 @@ public class UserControllerTest {
     public void getCarrierManager_whenCorrect_thenOk() throws Exception {
         CarrierManager request = CarrierManagerGenerator.generateCarrierManager();
         CarrierManagerDto response = CarrierManagerMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM UserControllerTest => Request to GET the CarrierManager: "+response);
         when(service.findCarrierManagerById(ENTITY_ID)).thenReturn(response);
 
         mockMvc.perform(get("/managers/" + ENTITY_ID) // HTTP Method = GET
@@ -55,6 +67,26 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(response)))
                 .andDo(print());
+    }
+
+    @Test
+    public void getCarrierManager_whenIncorrect_thenThrowEntityNotFound() throws Exception {
+        String message = "CarrierManager with id " + ENTITY_ID + " was not found";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String errorMessage = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), message);
+
+        when(service.findCarrierManagerById(ENTITY_ID)).thenThrow(new EntityNotFoundException(message));
+
+        CarrierManager request = CarrierManagerGenerator.generateCarrierManager();
+        CarrierManagerDto response = CarrierManagerMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM UserControllerTest => Request to GET the CarrierManager incorrectly: "+response);
+        mockMvc.perform(get("/managers/" + ENTITY_ID)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().is(404))
+                .andExpect(jsonPath("$.message").value(errorMessage)); // jsonPath() проверяет отд-ные поля
     }
 
     @Test
@@ -68,6 +100,8 @@ public class UserControllerTest {
         managerList.add(manager1);
         managerList.add(manager2);
         managerList.add(manager3);
+
+        log.info("FROM UserControllerTest => Request to GET ALL CarrierManagers: "+managerList);
         when(service.findAllCarrierManagers()).thenReturn(managerList);
 
         mockMvc.perform(get("/managers") // HTTP Method = GET
@@ -80,11 +114,30 @@ public class UserControllerTest {
     }
 
     @Test
+    public void updateCarrierManager_whenCorrect_thenOk() throws Exception {
+        CarrierManager request = CarrierManagerGenerator.generateCarrierManager();
+        request.setId(2l);
+        CarrierManagerDto response = CarrierManagerMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM UserControllerTest => Request to UPDATE the CarrierManagers: "+response);
+        when(service.saveCarrierManager(response)).thenReturn(response);
+
+        this.mockMvc.perform(put("/managers")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)))
+                .andDo(print());
+    }
+
+    @Test
     public void deleteCarrierManager_whenCorrect_thenOk() throws Exception {
         CarrierManager request = CarrierManagerGenerator.generateCarrierManager();
         CarrierManagerDto response = CarrierManagerMapper.INSTANSE.toDTO(request);
 
-        when(service.deleteCarrierManagerById(ENTITY_ID)).thenReturn(response);
+        //when(service.deleteCarrierManagerById(ENTITY_ID)).thenReturn(response);
+        when(service.findCarrierManagerById(ENTITY_ID)).thenReturn(response);
 
         mockMvc.perform(delete("/managers/" + ENTITY_ID) // HTTP Method = DELETE
                         .content(objectMapper.writeValueAsString(request))
@@ -113,6 +166,26 @@ public class UserControllerTest {
     }
 
     @Test
+    public void getCarriageRequest_whenIncorrect_thenThrowEntityNotFound() throws Exception {
+        String message = "CarriageRequest with id " + ENTITY_ID + " was not found";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String errorMessage = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), message);
+
+        when(service.findOrderById(ENTITY_ID)).thenThrow(new EntityNotFoundException(message));
+
+        CarriageRequest request = CarriageRequestGenerator.generateOrder();
+        CarriageRequestDto response = CarriageRequestMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM UserControllerTest => Request to GET the Order incorrectly: "+response);
+        mockMvc.perform(get("/orders/" + ENTITY_ID)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().is(404))
+                .andExpect(jsonPath("$.message").value(errorMessage)); // jsonPath() проверяет отд-ные поля
+    }
+
+    @Test
     public void getAllCarriageRequests_whenCorrect_thenOk() throws Exception{
         CarriageRequest order1 = CarriageRequestGenerator.generateOrder();
         CarriageRequest order2 = CarriageRequestGenerator.generateOrder();
@@ -132,6 +205,24 @@ public class UserControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(orderList)))
+                .andDo(print());
+    }
+
+    @Test
+    public void updateCarriageRequest_whenCorrect_thenOk() throws Exception {
+        CarriageRequest request = CarriageRequestGenerator.generateOrder();
+        request.setId(2l);
+        CarriageRequestDto response = CarriageRequestMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM UserControllerTest => Request to UPDATE the Order: "+response);
+        when(service.saveOrder(response)).thenReturn(response);
+
+        this.mockMvc.perform(put("/orders")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)))
                 .andDo(print());
     }
 
@@ -169,6 +260,26 @@ public class UserControllerTest {
     }
 
     @Test
+    public void getCarrier_whenIncorrect_thenThrowEntityNotFound() throws Exception {
+        String message = "Carrier with id " + ENTITY_ID + " was not found";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String errorMessage = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), message);
+
+        when(service.findCarrierById(ENTITY_ID)).thenThrow(new EntityNotFoundException(message));
+
+        Carrier request = CarrierGenerator.generateCarrier();
+        CarrierDto response = CarrierMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM UserControllerTest => Request to GET the Carrier incorrectly: "+response);
+        mockMvc.perform(get("/carriers/" + ENTITY_ID)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().is(404))
+                .andExpect(jsonPath("$.message").value(errorMessage)); // jsonPath() проверяет отд-ные поля
+    }
+
+    @Test
     public void getAllCarriers_whenCorrect_thenOk() throws Exception {
         Carrier carrier1 = CarrierGenerator.generateCarrier();
         Carrier carrier2 = CarrierGenerator.generateCarrier();
@@ -191,12 +302,31 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
-    @Test//!!!
+    @Test
+    public void updateAddCarrier_whenCorrect_thenOk() throws Exception {
+        Carrier request = CarrierGenerator.generateCarrier();
+        request.setId(2l);
+        CarrierDto response = CarrierMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM UserControllerTest => Request to UPDATE the Carrier: "+response);
+        when(service.saveCarrier(response)).thenReturn(response);
+
+        this.mockMvc.perform(put("/carriers")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)))
+                .andDo(print());
+    }
+
+    @Test
     public void deleteCarrier_whenCorrect_thenOk() throws Exception {
         Carrier request = CarrierGenerator.generateCarrier();
         CarrierDto response = CarrierMapper.INSTANSE.toDTO(request);
 
-        when(service.deleteCarrierById(ENTITY_ID)).thenReturn(response);
+        //when(service.deleteCarrierById(ENTITY_ID)).thenReturn(response);
+        when(service.findCarrierById(ENTITY_ID)).thenReturn(response);
 
         this.mockMvc.perform(delete("/carriers/" + ENTITY_ID)
                         .content(objectMapper.writeValueAsString(request))
@@ -226,6 +356,26 @@ public class UserControllerTest {
     }
 
     @Test
+    public void getFreightForwarder_whenIncorrect_thenThrowEntityNotFound() throws Exception {
+        String message = "FreightForwarder with id " + ENTITY_ID + " was not found";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String errorMessage = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), message);
+
+        when(service.findFreightForwarderById(ENTITY_ID)).thenThrow(new EntityNotFoundException(message));
+
+        FreightForwarder request = FreightForwarderGenerator.generateFreightForwarder();
+        FreightForwarderDto response = FreightForwarderMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM UserControllerTest => Request to GET the FreightForwarder incorrectly: "+response);
+        mockMvc.perform(get("/forwarders/" + ENTITY_ID)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().is(404))
+                .andExpect(jsonPath("$.message").value(errorMessage)); // jsonPath() проверяет отд-ные поля
+    }
+
+    @Test
     public void getAlFreightForwarders_whenCorrect_thenOk() throws Exception {
         FreightForwarder forwarder1 = FreightForwarderGenerator.generateFreightForwarder();
         FreightForwarder forwarder2 = FreightForwarderGenerator.generateFreightForwarder();
@@ -248,12 +398,30 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    public void updateAddFreightForwarder() throws Exception {
+        FreightForwarder request = FreightForwarderGenerator.generateFreightForwarder();
+        FreightForwarderDto response = FreightForwarderMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM UserControllerTest => Request to UPDATE the Forwarder: "+response);
+        when(service.saveFreightForwarder(response)).thenReturn(response);
+
+        this.mockMvc.perform(put("/forwarders")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)))
+                .andDo(print());
+    }
+
     @Test ///!!!!
     public void deleteFreightForwarder_whenCorrect_thenOk() throws Exception {
         FreightForwarder request = FreightForwarderGenerator.generateFreightForwarder();
         FreightForwarderDto response = FreightForwarderMapper.INSTANSE.toDTO(request);
 
-        when(service.deleteFreightForwarderById(ENTITY_ID)).thenReturn(response);
+        //when(service.deleteFreightForwarderById(ENTITY_ID)).thenReturn(response);
+        when(service.findFreightForwarderById(ENTITY_ID)).thenReturn(response);
 
         mockMvc.perform(delete("/forwarders/" + ENTITY_ID) // HTTP Method = DELETE
                         .content(objectMapper.writeValueAsString(request))
@@ -283,6 +451,27 @@ public class UserControllerTest {
     }
 
     @Test
+    public void getTruckPark_whenIncorrect_thenThrowEntityNotFound() throws Exception {
+        String message = "TruckPark with id " + ENTITY_ID + " was not found";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String errorMessage = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), message);
+
+        when(service.findTruckParkById(ENTITY_ID)).thenThrow(new EntityNotFoundException(message));
+
+        TruckPark request = TruckParkGenerator.generateTruckPark();
+        TruckParkDto response = TruckParkMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM UserControllerTest => Request to GET the TruckPark incorrectly: "+response);
+        mockMvc.perform(get("/truck_parks/" + ENTITY_ID)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().is(404))
+                .andExpect(jsonPath("$.message").value(errorMessage)); // jsonPath() проверяет отд-ные поля
+    }
+
+
+    @Test
     public void getAllTruckParks_whenCorrect_thenOk() throws Exception {
         TruckPark park1 = TruckParkGenerator.generateTruckPark();
         TruckPark park2 = TruckParkGenerator.generateTruckPark();
@@ -306,11 +495,29 @@ public class UserControllerTest {
     }
 
     @Test
+    public void updateAddTruckPark() throws Exception {
+        TruckPark request = TruckParkGenerator.generateTruckPark();
+        TruckParkDto response = TruckParkMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM UserControllerTest => Request to UPDATE the TruckPark: "+response);
+        when(service.saveTruckPark(response)).thenReturn(response);
+
+        this.mockMvc.perform(put("/truck_parks")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)))
+                .andDo(print());
+    }
+
+    @Test
     public void deleteTruckPark_whenCorrect_thenOk() throws Exception {
         TruckPark request = TruckParkGenerator.generateTruckPark();
         TruckParkDto response = TruckParkMapper.INSTANSE.toDTO(request);
 
-        when(service.deleteTruckParkById(ENTITY_ID)).thenReturn(response);
+        //when(service.deleteTruckParkById(ENTITY_ID)).thenReturn(response);
+        when(service.findTruckParkById(ENTITY_ID)).thenReturn(response);
 
         mockMvc.perform(delete("/truck_parks/" + ENTITY_ID) // HTTP Method = DELETE
                         .content(objectMapper.writeValueAsString(request))

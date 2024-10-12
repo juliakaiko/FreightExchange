@@ -1,8 +1,6 @@
 package com.senla.myproject.mapper;
 
-import com.senla.myproject.dto.FreightForwarderDto;
 import com.senla.myproject.dto.TruckParkDto;
-import com.senla.myproject.model.FreightForwarder;
 import com.senla.myproject.model.TruckPark;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;

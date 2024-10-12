@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 
 @RestController /* объединяет  @Controller и @ResponseBody => не только помечает класс как Spring MVC Controller,
@@ -58,12 +59,16 @@ public class UserController {
 
     @PutMapping ("/managers")
     public ResponseEntity updateCarrierManager (@RequestBody CarrierManagerDto managerDto){
-        log.info("FROM RegistrationController => Request to update the CarrierManager: "+managerDto);
+        log.info("FROM UserController => Request to update the CarrierManager: "+managerDto);
         CarrierManagerDto managerDto2 = service.findCarrierManagerById(managerDto.getId());
-        managerDto.setCarriers(managerDto2.getCarriers());
-        managerDto.setOrders(managerDto2.getOrders());
+        if (managerDto2 != null) {
+            managerDto.setCarriers(managerDto2.getCarriers());
+            managerDto.setOrders(managerDto2.getOrders());
+        }
         service.saveCarrierManager(managerDto);
-        return new ResponseEntity (managerDto, HttpStatus.OK);
+        if (managerDto == null)
+            return new ResponseEntity ("CarrierManager with id: " +managerDto.getId()+ " not found",HttpStatus.NOT_FOUND);
+        return new ResponseEntity (managerDto,HttpStatus.OK);
     }
 
     @DeleteMapping("/managers/{id}")
@@ -94,11 +99,15 @@ public class UserController {
 
     @PutMapping("/orders")
     public ResponseEntity updateCarriageRequest (@RequestBody CarriageRequestDto orderDto){
-        log.info("FROM RegistrationController => Request to update the CarriageRequest: "+orderDto);
+        log.info("FROM UserController => Request to update the CarriageRequest: "+orderDto);
         CarriageRequestDto orderDto2 = service.findOrderById(orderDto.getId());
-        orderDto.setForwarder(orderDto2.getForwarder());
-        orderDto.setManager(orderDto2.getManager());
+        if (orderDto2 != null){
+            orderDto.setForwarder(orderDto2.getForwarder());
+            orderDto.setManager(orderDto2.getManager());
+        }
         service.saveOrder(orderDto);
+        if (orderDto == null)
+            return new ResponseEntity ("Order with id: " +orderDto.getId()+ " not found",HttpStatus.NOT_FOUND);
         return new ResponseEntity (orderDto, HttpStatus.OK);
     }
 
@@ -130,10 +139,13 @@ public class UserController {
 
     @PutMapping("/carriers")
     public ResponseEntity updateCarrier (@RequestBody CarrierDto carrierDto){
-        log.info("FROM RegistrationController => Request to update the Carrier: "+carrierDto);
+        log.info("FROM UserController => Request to update the Carrier: "+carrierDto);
         CarrierDto carrierDto2 = service.findCarrierById(carrierDto.getId());
-        carrierDto.setPark(carrierDto2.getPark());
+        if (carrierDto2 != null)
+            carrierDto.setPark(carrierDto2.getPark());
         service.saveCarrier(carrierDto);
+        if (carrierDto == null)
+            return new ResponseEntity("Carrier with id: " + carrierDto2.getId() + " not found", HttpStatus.NOT_FOUND);
         return new ResponseEntity (carrierDto, HttpStatus.OK);
     }
 
@@ -165,10 +177,13 @@ public class UserController {
 
     @PutMapping("/forwarders")
     public ResponseEntity updateFreightForwarder (@RequestBody FreightForwarderDto forwarderDto){
-        log.info("FROM RegistrationController => Request to update the FreightForwarder: "+forwarderDto);
+        log.info("FROM UserController => Request to update the FreightForwarder: "+forwarderDto);
         FreightForwarderDto forwarderDto2 = service.findFreightForwarderById(forwarderDto.getId());
-        forwarderDto.setOrders(forwarderDto2.getOrders());
+        if (forwarderDto2 != null)
+            forwarderDto.setOrders(forwarderDto2.getOrders());
         service.saveFreightForwarder(forwarderDto);
+        if(forwarderDto == null)
+            return new ResponseEntity("FreightForwarder with id: " + forwarderDto.getId() + " not found", HttpStatus.NOT_FOUND);
         return new ResponseEntity (forwarderDto, HttpStatus.OK);
     }
 
@@ -200,10 +215,13 @@ public class UserController {
 
     @PutMapping("/truck_parks")
     public ResponseEntity updateTruckPark (@RequestBody TruckParkDto parkDto){
-        log.info("FROM RegistrationController => Request to update the TruckPark: "+parkDto);
+        log.info("FROM UserController => Request to update the TruckPark: "+parkDto);
         TruckParkDto parkDto2 =  service.findTruckParkById(parkDto.getId());
-        parkDto.setCarrier(parkDto2.getCarrier());
+        if (parkDto2 != null)
+            parkDto.setCarrier(parkDto2.getCarrier());
         service.saveTruckPark(parkDto);
+        if (parkDto == null)
+            return new ResponseEntity("TruckPark with id: " + parkDto.getId() + " not found", HttpStatus.NOT_FOUND);
         return new ResponseEntity (parkDto, HttpStatus.OK);
     }
 

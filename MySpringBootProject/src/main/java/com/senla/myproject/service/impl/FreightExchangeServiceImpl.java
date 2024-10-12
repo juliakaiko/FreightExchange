@@ -34,7 +34,6 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
         //CarrierManager manager = managerRepository.getOne(id);
         Optional<CarrierManager> manager = managerRepository.findById(id);
         log.info("FROM SERVISE: findCarrierManagerById() => manager: "+manager);
-        //return entityMapper.managerToDTO(manager);
         return CarrierManagerMapper.INSTANSE.toDTO(manager.get());
     }
 
@@ -44,12 +43,12 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
         CarrierManager manager = managerRepository.findCarrierManagerWithEntityGraphByEmail(email);
         log.info("FROM SERVISE: findCarrierManagerWithEntityGraphByEmail() => manager: "+manager);
         return CarrierManagerMapper.INSTANSE.toDTO(manager);
-        //return entityMapper.managerToDTO(manager);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CarrierManager> findAllCarrierManagers() {
+        log.info("FROM SERVISE: findAllCarrierManagers()");
         return managerRepository.findAll();
     }
 
@@ -57,7 +56,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Transactional
     public CarrierManagerDto saveCarrierManager(CarrierManagerDto managerDto){
         CarrierManager manager = CarrierManagerMapper.INSTANSE.toEntity(managerDto);//entityMapper.managerDtoToEntity(managerDto);
-        //CarrierManager manager = entityMapper.managerDtoToEntity(managerDto);
+        log.info("FROM SERVISE: saveCarrierManager() => manager: "+manager);
         managerRepository.save(manager);
         return managerDto;
     }
@@ -65,29 +64,26 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional
     public CarrierManagerDto deleteCarrierManagerById(Long id) {
-        //CarrierManager manager = managerRepository.getOne(id);
         Optional<CarrierManager> manager = managerRepository.findById(id);
         managerRepository.deleteById(id);
         log.info("FROM SERVISE: deleteCarrierManagerById() => manager: "+manager);
         return CarrierManagerMapper.INSTANSE.toDTO(manager.get());
-        //return entityMapper.managerToDTO(manager);
     }
 
     //Carrier
     @Override
     @Transactional(readOnly = true)
     public CarrierDto findCarrierById(Long id) {
-        //Carrier carrier = carrierRepository.getOne(id);
         Optional<Carrier> carrier = carrierRepository.findById(id);
+        log.info("FROM SERVISE: findCarrierById() => carrier: "+carrier);
         return CarrierMapper.INSTANSE.toDTO(carrier.get());
-        //return entityMapper.carrierToDTO(carrier) ;
     }
 
     @Override
     @Transactional
     public CarrierDto saveCarrier(CarrierDto carrierDTO){
-        Carrier carrier = CarrierMapper.INSTANSE.toEntity(carrierDTO);//entityMapper.carrierDtoToEntity(carrierDTO);
-        //Carrier carrier = entityMapper.carrierDtoToEntity(carrierDTO);
+        Carrier carrier = CarrierMapper.INSTANSE.toEntity(carrierDTO);
+        log.info("FROM SERVISE: saveCarrier() => carrier: "+carrier);
         carrierRepository.save(carrier);
         return carrierDTO;
     }
@@ -95,16 +91,16 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional
     public CarrierDto deleteCarrierById(Long id) {
-        //Carrier carrier = carrierRepository.getOne(id);
         Optional<Carrier> carrier = carrierRepository.findById(id);
+        log.info("FROM SERVISE: deleteCarrierById() => carrier: "+carrier);
         carrierRepository.deleteById(id);
         return CarrierMapper.INSTANSE.toDTO(carrier.get());
-        //return entityMapper.carrierToDTO(carrier);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List <Carrier> findAllCarriers() {
+        log.info("FROM SERVISE: findAllCarriers()");
         return carrierRepository.findAll();
     }
 
@@ -112,17 +108,16 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional(readOnly = true)
     public FreightForwarderDto findFreightForwarderById(Long id) {
-        //FreightForwarder forwarder = forwarderRepository.getOne(id);
         Optional<FreightForwarder> forwarder = forwarderRepository.findById(id);
+        log.info("FROM SERVISE: findFreightForwarderById() => forwarder: "+forwarder);
         return FreightForwarderMapper.INSTANSE.toDTO(forwarder.get());
-        //return entityMapper.forwarderToDTO(forwarder);
     }
 
     @Override
     @Transactional
     public FreightForwarderDto saveFreightForwarder(FreightForwarderDto forwarderDto){
-        FreightForwarder forwarder = FreightForwarderMapper.INSTANSE.toEntity(forwarderDto);//entityMapper.forwarderDtoToEntity(userDTO);
-        //FreightForwarder forwarder = entityMapper.forwarderDtoToEntity(forwarderDto);
+        FreightForwarder forwarder = FreightForwarderMapper.INSTANSE.toEntity(forwarderDto);
+        log.info("FROM SERVISE: saveFreightForwarder() => forwarder: "+forwarder);
         forwarderRepository.save(forwarder);
         return forwarderDto;
     }
@@ -130,16 +125,16 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional
     public FreightForwarderDto deleteFreightForwarderById(Long id) {
-        //FreightForwarder forwarder = forwarderRepository.getOne(id);
         Optional<FreightForwarder> forwarder = forwarderRepository.findById(id);
+        log.info("FROM SERVISE: deleteFreightForwarderById() => forwarder: "+forwarder);
         forwarderRepository.deleteById(id);
         return FreightForwarderMapper.INSTANSE.toDTO(forwarder.get());
-        //return entityMapper.forwarderToDTO(forwarder);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List <FreightForwarder> findAllForwarders() {
+        log.info("FROM SERVISE: findAllForwarders()");
         return forwarderRepository.findAll();
     }
 
@@ -147,17 +142,16 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional(readOnly = true)
     public CarriageRequestDto findOrderById(Long id) {
-        //CarriageRequest order = orderRepository.getOne(id);
         Optional<CarriageRequest> order = orderRepository.findById(id);
+        log.info("FROM SERVISE: findOrderById() => order: "+order);
         return CarriageRequestMapper.INSTANSE.toDTO(order.get());
-        //return entityMapper.carriageRequestToDTO(order);
     }
 
     @Override
     @Transactional
     public CarriageRequestDto saveOrder(CarriageRequestDto carriageRequestDTO){
-        CarriageRequest order = CarriageRequestMapper.INSTANSE.toEntity(carriageRequestDTO);//entityMapper.carriageRequestDtoToEntity(carriageRequestDTO);
-        //CarriageRequest order = entityMapper.carriageRequestDtoToEntity(carriageRequestDTO);
+        CarriageRequest order = CarriageRequestMapper.INSTANSE.toEntity(carriageRequestDTO);
+        log.info("FROM SERVISE: saveOrder() => order: "+order);
         orderRepository.save(order);
         return carriageRequestDTO;
     }
@@ -165,16 +159,16 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional
     public CarriageRequestDto deleteOrderById(Long id) {
-        //CarriageRequest order = orderRepository.getOne(id);
         Optional<CarriageRequest> order = orderRepository.findById(id);
+        log.info("FROM SERVISE: deleteOrderById() => order: "+order);
         orderRepository.deleteById(id);
         return CarriageRequestMapper.INSTANSE.toDTO(order.get());
-        //return entityMapper.carriageRequestToDTO(order);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CarriageRequest> findAllOrders() {
+        log.info("FROM SERVISE: findAllOrders()");
         return orderRepository.findAll();
     }
 
@@ -182,17 +176,16 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional(readOnly = true)
     public TruckParkDto findTruckParkById(Long id) {
-        //TruckPark park = parkRepository.getOne(id);
         Optional<TruckPark> park = parkRepository.findById(id);
+        log.info("FROM SERVISE: findTruckParkById() => park: "+park);
         return TruckParkMapper.INSTANSE.toDTO(park.get());
-        //return entityMapper.truckParkToDTO(park);
     }
 
     @Override
     @Transactional
     public TruckParkDto saveTruckPark(TruckParkDto parkDTO){
-        TruckPark park = TruckParkMapper.INSTANSE.toEntity(parkDTO);//entityMapper.truckParkDtoToEntity(parkDTO);
-        //TruckPark park = entityMapper.truckParkDtoToEntity(parkDTO);
+        TruckPark park = TruckParkMapper.INSTANSE.toEntity(parkDTO);
+        log.info("FROM SERVISE: saveTruckPark() => park: "+park);
         parkRepository.save(park);
         return parkDTO;
     }
@@ -200,15 +193,15 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional
     public TruckParkDto deleteTruckParkById(Long id) {
-        //TruckPark park = parkRepository.getOne(id);
         Optional<TruckPark> park = parkRepository.findById(id);
+        log.info("FROM SERVISE: deleteTruckParkById() => park: "+park);
         parkRepository.deleteById(id);
         return TruckParkMapper.INSTANSE.toDTO(park.get());
-        //return entityMapper.truckParkToDTO(park);
     }
 
     @Transactional(readOnly = true)
     public List<TruckPark> findAllTruckParks(){
+        log.info("FROM SERVISE: findAllTruckParks()");
         return parkRepository.findAll();
     }
 }

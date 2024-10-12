@@ -6,6 +6,7 @@ import com.senla.myproject.mapper.*;
 import com.senla.myproject.model.*;
 import com.senla.myproject.service.FreightExchangeService;
 import com.senla.myproject.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest (controllers = RegistrationController.class)
+@Slf4j // для логирования
 public class RegistrationControllerTest {
 
     @MockBean // объект добавляет в Contex в отличие от @Mock
@@ -35,6 +37,8 @@ public class RegistrationControllerTest {
     public void testAddCarrierManager() throws Exception {
         CarrierManager request = CarrierManagerGenerator.generateCarrierManager();
         CarrierManagerDto response = CarrierManagerMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM RegistrationControllerTest => Request to ADD the CarrierManager: "+response);
         when(service.saveCarrierManager(response)).thenReturn(response);
 
         this.mockMvc.perform(post("/managers")
@@ -49,6 +53,8 @@ public class RegistrationControllerTest {
     public void testAddCarriageRequest() throws Exception {
         CarriageRequest request = CarriageRequestGenerator.generateOrder();
         CarriageRequestDto response = CarriageRequestMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM RegistrationControllerTest => Request to ADD the Order: "+response);
         when(service.saveOrder(response)).thenReturn(response);
 
         this.mockMvc.perform(post("/orders")
@@ -63,6 +69,8 @@ public class RegistrationControllerTest {
     public void testAddCarrier() throws Exception {
         Carrier request = CarrierGenerator.generateCarrier();
         CarrierDto response = CarrierMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM RegistrationControllerTest => Request to ADD the Carrier: "+response);
         when(service.saveCarrier(response)).thenReturn(response);
 
         this.mockMvc.perform(post("/carriers")
@@ -77,6 +85,8 @@ public class RegistrationControllerTest {
     public void testAddFreightForwarder() throws Exception {
         FreightForwarder request = FreightForwarderGenerator.generateFreightForwarder();
         FreightForwarderDto response = FreightForwarderMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM RegistrationControllerTest => Request to ADD the Forwarder: "+response);
         when(service.saveFreightForwarder(response)).thenReturn(response);
 
         this.mockMvc.perform(post("/forwarders")
@@ -91,6 +101,8 @@ public class RegistrationControllerTest {
     public void testAddTruckPark() throws Exception {
         TruckPark request = TruckParkGenerator.generateTruckPark();
         TruckParkDto response = TruckParkMapper.INSTANSE.toDTO(request);
+
+        log.info("FROM RegistrationControllerTest => Request to ADD the TruckPark: "+response);
         when(service.saveTruckPark(response)).thenReturn(response);
 
         this.mockMvc.perform(post("/truck_parks")
@@ -100,6 +112,4 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(response)));
     }
-
-
 }
