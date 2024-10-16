@@ -1,8 +1,12 @@
 package com.senla.myproject.repository;
 
+import com.senla.myproject.model.CarriageRequest;
 import com.senla.myproject.model.CarrierManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -13,5 +17,6 @@ public interface CarrierManagerRepository extends JpaRepository<CarrierManager, 
     @EntityGraph(value = "carrier_manager_entity_graph")
     CarrierManager findCarrierManagerWithEntityGraphByEmail(String email);
 
-
+    @Query(value = "select * from carrier_manager", nativeQuery = true) //nativeQuery = true - SQL
+    Page<CarrierManager> findAllManagersNative(Pageable pageable);
 }

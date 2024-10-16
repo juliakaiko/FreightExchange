@@ -7,6 +7,7 @@ import com.senla.myproject.service.FreightExchangeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,7 @@ public class UserController {
 
     @GetMapping("/managers/search")
     //http://localhost:8080/managers/search?email=kaiko%40gmail.com
+    //@RequestParam извлекает значения из строки запроса,строка запроса начинается ?
     public ResponseEntity  getCarrierManagerWithEntityGraphByEmail (@RequestParam String email) {
         log.info("FROM UserController => Request to find the CarrierManager by email: "+email);
         CarrierManagerDto managerDto = service.findCarrierManagerWithEntityGraphByEmail(email);
@@ -55,6 +57,14 @@ public class UserController {
     public List<CarrierManager> getAllCarrierManagers(){
         log.info("FROM UserController => Request to find all CarrierManagers");
         return service.findAllCarrierManagers();
+    }
+
+    //Pagination
+    @GetMapping("/pageable_managers")
+    //http://localhost:8080/pageable_managers?page=0&size=1
+    public Page<CarrierManagerDto> getAllNativeManagers(@RequestParam int page, @RequestParam int size){
+        log.info("FROM UserController => Request to find all CarrierManagers with pagination");
+        return service.findAllManagersNativeWithPagination(page,size);
     }
 
     @PutMapping ("/managers")
@@ -91,10 +101,29 @@ public class UserController {
         return new ResponseEntity(orderDto, HttpStatus.OK);
     }
 
+    @GetMapping("/orders/search/{name}")
+    //http://localhost:8080/orders/search/N-12345678
+    //@PathVariable извлекает значения из пути URI
+    public ResponseEntity  getCarriageRequestByNameIsLike (@PathVariable("name") String orderName) {
+        log.info("FROM UserController => Request to find the CarriageRequest by name: "+orderName);
+        CarriageRequestDto orderDto = service.findOrderByName(orderName);
+        if (orderDto == null)
+            return new ResponseEntity("Order with name: " + orderName + " not found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity(orderDto, HttpStatus.OK);
+    }
+
     @GetMapping("/orders")
     public List<CarriageRequest> getAllCarriageRequests(){
         log.info("FROM UserController => Request to find all CarriageRequests");
         return service.findAllOrders();
+    }
+
+    //Pagination
+    @GetMapping("/pageable_orders")
+    //http://localhost:8080/pageable_orders?page=0&size=5
+    public Page<CarriageRequestDto> getAllNativeCarriageRequests(@RequestParam int page, @RequestParam int size){
+        log.info("FROM UserController => Request to find all CarriageRequests with pagination");
+        return service.findAllOrdersNativeWithPagination(page,size);
     }
 
     @PutMapping("/orders")
@@ -137,6 +166,14 @@ public class UserController {
         return service.findAllCarriers();
     }
 
+    //Pagination
+    @GetMapping("/pageable_carriers")
+    //http://localhost:8080/pageable_carriers?page=0&size=1
+    public Page<CarrierDto> getAllNativeCarriers(@RequestParam int page, @RequestParam int size){
+        log.info("FROM UserController => Request to find all Carriers with pagination");
+        return service.findAllCarriersNativeWithPagination(page,size);
+    }
+
     @PutMapping("/carriers")
     public ResponseEntity updateCarrier (@RequestBody CarrierDto carrierDto){
         log.info("FROM UserController => Request to update the Carrier: "+carrierDto);
@@ -175,6 +212,14 @@ public class UserController {
         return service.findAllForwarders();
     }
 
+    //Pagination
+    @GetMapping("/pageable_forwarders")
+    //http://localhost:8080/pageable_forwarders?page=0&size=1
+    public Page<FreightForwarderDto> getAllNativeFreightForwarders(@RequestParam int page, @RequestParam int size){
+        log.info("FROM UserController => Request to find all FreightForwarders with pagination");
+        return service.findAllForwardersNativeWithPagination(page,size);
+    }
+
     @PutMapping("/forwarders")
     public ResponseEntity updateFreightForwarder (@RequestBody FreightForwarderDto forwarderDto){
         log.info("FROM UserController => Request to update the FreightForwarder: "+forwarderDto);
@@ -211,6 +256,14 @@ public class UserController {
     public List<TruckPark> getAllTruckParks(){
         log.info("FROM UserController => Request to find all TruckParks");
         return service.findAllTruckParks();
+    }
+
+    //Pagination
+    @GetMapping("/pageable_truck_parks")
+    //http://localhost:8080/pageable_truck_parks?page=0&size=1
+    public Page<TruckParkDto> getAllNativeTruckParks(@RequestParam int page, @RequestParam int size){
+        log.info("FROM UserController => Request to find all TruckParks with pagination");
+        return service.findAllTruckParksNativeWithPagination(page,size);
     }
 
     @PutMapping("/truck_parks")

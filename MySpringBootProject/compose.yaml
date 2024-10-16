@@ -1,9 +1,24 @@
 services:
   postgres:
     image: 'postgres:latest'
+    container_name: postgres
+    depends_on:
+      - db
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=postgres'
+      - 'POSTGRES_PASSWORD=pass'
+      - 'POSTGRES_USER=postgres'
     ports:
-      - '5432'
+      - '5433'
+  db:
+    image: postgres
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5433/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=pass
+    ports:
+      - '5433'

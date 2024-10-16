@@ -1,6 +1,7 @@
 package com.senla.myproject.service.impl;
 
 import com.senla.myproject.dto.CarrierManagerDto;
+import com.senla.myproject.exceptions.NotFoundException;
 import com.senla.myproject.mapper.*;
 import com.senla.myproject.model.CarrierManager;
 import com.senla.myproject.repository.*;
@@ -9,6 +10,9 @@ import com.senla.myproject.dto.*;
 import com.senla.myproject.service.FreightExchangeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +24,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FreightExchangeServiceImpl implements FreightExchangeService {
 
-    //private final EntityMapper entityMapper;
     private final CarrierRepository carrierRepository;
     private final CarrierManagerRepository managerRepository;
     private final FreightForwarderRepository forwarderRepository;
@@ -30,9 +33,11 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     //CarrierManager
     @Override
     @Transactional(readOnly = true)
-    public CarrierManagerDto findCarrierManagerById(Long id) {
-        //CarrierManager manager = managerRepository.getOne(id);
-        Optional<CarrierManager> manager = managerRepository.findById(id);
+    public CarrierManagerDto findCarrierManagerById(Long id)  {
+        /*  Optional.of  бросит исключение NullPointerException, если ему передать значение null в качестве
+        параметра. Optional.ofNullable вернёт Optional, не содержащий значение, если ему передать null.*/
+        Optional<CarrierManager> manager = Optional.ofNullable(managerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("CarrierManager wasn't found by id " + id)));
         log.info("FROM SERVISE: findCarrierManagerById() => manager: "+manager);
         return CarrierManagerMapper.INSTANSE.toDTO(manager.get());
     }
@@ -50,6 +55,16 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     public List<CarrierManager> findAllCarrierManagers() {
         log.info("FROM SERVISE: findAllCarrierManagers()");
         return managerRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CarrierManagerDto> findAllManagersNativeWithPagination(int page, int size) {
+        log.info("FROM SERVISE: findAllManagersNativeWithPaginatio()");
+        var pageable  = PageRequest.of(page,size, Sort.by("id"));
+        Page<CarrierManager> managerList = managerRepository.findAllManagersNative(pageable);
+        Page<CarrierManagerDto> managerDtos = managerList.map(CarrierManagerMapper.INSTANSE::toDTO);
+        return managerDtos;
     }
 
     @Override
@@ -91,7 +106,8 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional
     public CarrierDto deleteCarrierById(Long id) {
-        Optional<Carrier> carrier = carrierRepository.findById(id);
+        Optional<Carrier> carrier = Optional.ofNullable(carrierRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("CarrierManager wasn't found by id " + id)));
         log.info("FROM SERVISE: deleteCarrierById() => carrier: "+carrier);
         carrierRepository.deleteById(id);
         return CarrierMapper.INSTANSE.toDTO(carrier.get());
@@ -104,11 +120,22 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
         return carrierRepository.findAll();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CarrierDto> findAllCarriersNativeWithPagination(int page, int size) {
+        log.info("FROM SERVISE: findAllCarriersNativeWithPagination()");
+        var pageable  = PageRequest.of(page,size, Sort.by("id"));
+        Page<Carrier> carrierList = carrierRepository.findAllCarriersNative(pageable);
+        Page<CarrierDto> carrierDtos = carrierList.map(CarrierMapper.INSTANSE::toDTO);
+        return carrierDtos;
+    }
+
     //FreightForwarder
     @Override
     @Transactional(readOnly = true)
     public FreightForwarderDto findFreightForwarderById(Long id) {
-        Optional<FreightForwarder> forwarder = forwarderRepository.findById(id);
+        Optional<FreightForwarder> forwarder = Optional.ofNullable(forwarderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("FreightForwarder wasn't found by id " + id)));
         log.info("FROM SERVISE: findFreightForwarderById() => forwarder: "+forwarder);
         return FreightForwarderMapper.INSTANSE.toDTO(forwarder.get());
     }
@@ -125,7 +152,8 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional
     public FreightForwarderDto deleteFreightForwarderById(Long id) {
-        Optional<FreightForwarder> forwarder = forwarderRepository.findById(id);
+        Optional<FreightForwarder> forwarder = Optional.ofNullable(forwarderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("FreightForwarder wasn't found by id " + id)));
         log.info("FROM SERVISE: deleteFreightForwarderById() => forwarder: "+forwarder);
         forwarderRepository.deleteById(id);
         return FreightForwarderMapper.INSTANSE.toDTO(forwarder.get());
@@ -138,12 +166,32 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
         return forwarderRepository.findAll();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<FreightForwarderDto> findAllForwardersNativeWithPagination(int page, int size) {
+        log.info("FROM SERVISE: findAllForwardersNativeWithPagination()");
+        var pageable  = PageRequest.of(page,size, Sort.by("id"));
+        Page<FreightForwarder> forwarderList = forwarderRepository.findAllFreightForwardersNative(pageable);
+        Page<FreightForwarderDto> forwarderDtos = forwarderList.map(FreightForwarderMapper.INSTANSE::toDTO);
+        return forwarderDtos;
+    }
+
     //Order
     @Override
     @Transactional(readOnly = true)
     public CarriageRequestDto findOrderById(Long id) {
-        Optional<CarriageRequest> order = orderRepository.findById(id);
+        Optional<CarriageRequest> order = Optional.ofNullable(orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Order wasn't found by id " + id)));
         log.info("FROM SERVISE: findOrderById() => order: "+order);
+        return CarriageRequestMapper.INSTANSE.toDTO(order.get());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CarriageRequestDto findOrderByName(String orderName) {
+        Optional<CarriageRequest> order = Optional.ofNullable(orderRepository.findByOrderNameIsLike(orderName).
+                orElseThrow(() -> new NotFoundException("Order wasn't found by name " + orderName)));;
+        log.info("FROM SERVISE: findOrderByName() => order: "+order);
         return CarriageRequestMapper.INSTANSE.toDTO(order.get());
     }
 
@@ -159,7 +207,8 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional
     public CarriageRequestDto deleteOrderById(Long id) {
-        Optional<CarriageRequest> order = orderRepository.findById(id);
+        Optional<CarriageRequest> order = Optional.ofNullable(orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Order wasn't found by id " + id)));
         log.info("FROM SERVISE: deleteOrderById() => order: "+order);
         orderRepository.deleteById(id);
         return CarriageRequestMapper.INSTANSE.toDTO(order.get());
@@ -172,11 +221,22 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
         return orderRepository.findAll();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CarriageRequestDto> findAllOrdersNativeWithPagination(int page, int size) {
+        log.info("FROM SERVISE: findAllOrdersNativeWithPagination()");
+        var pageable  = PageRequest.of(page,size, Sort.by("id"));
+        Page<CarriageRequest> orderList = orderRepository.findAllOrdersNative(pageable);
+        Page<CarriageRequestDto> orderDtos = orderList.map(CarriageRequestMapper.INSTANSE::toDTO);
+        return orderDtos;
+    }
+
     //TruckPark
     @Override
     @Transactional(readOnly = true)
     public TruckParkDto findTruckParkById(Long id) {
-        Optional<TruckPark> park = parkRepository.findById(id);
+        Optional<TruckPark> park = Optional.ofNullable(parkRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("TruckPark wasn't found by id " + id)));
         log.info("FROM SERVISE: findTruckParkById() => park: "+park);
         return TruckParkMapper.INSTANSE.toDTO(park.get());
     }
@@ -193,7 +253,8 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     @Override
     @Transactional
     public TruckParkDto deleteTruckParkById(Long id) {
-        Optional<TruckPark> park = parkRepository.findById(id);
+        Optional<TruckPark> park = Optional.ofNullable(parkRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("TruckPark wasn't found by id " + id)));
         log.info("FROM SERVISE: deleteTruckParkById() => park: "+park);
         parkRepository.deleteById(id);
         return TruckParkMapper.INSTANSE.toDTO(park.get());
@@ -203,5 +264,15 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
     public List<TruckPark> findAllTruckParks(){
         log.info("FROM SERVISE: findAllTruckParks()");
         return parkRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<TruckParkDto> findAllTruckParksNativeWithPagination(int page, int size) {
+        log.info("FROM SERVISE: findAllTruckParksNativeWithPagination()");
+        var pageable  = PageRequest.of(page,size);
+        Page<TruckPark> parkList = parkRepository.findAllTruckParksNative(pageable);
+        Page<TruckParkDto> parkDtos = parkList.map(TruckParkMapper.INSTANSE::toDTO);
+        return parkDtos;
     }
 }

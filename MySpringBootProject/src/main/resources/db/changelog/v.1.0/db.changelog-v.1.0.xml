@@ -241,6 +241,25 @@
             INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('N-87654321', 'Брест', 'Москва', 'Клей', 1700, true, 2, 2);
             INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('N-32765487', 'Можайск', 'Брест', 'Каучук', 600, true, 2, 2);
             INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('N-85632190', 'Брест', 'Владимир', 'Конфеты', 2000, false, 3, 3);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('N-85600045', 'Москва', 'Минск', 'Полипропилен', 200, false, 1, 2);
+
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('T-11111111', 'A1', 'B1', 'ТНП', 1001, false, 1, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('T-11111112', 'A2', 'B2', 'ТНП', 1002, false, 1, 2);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('T-11111113', 'A3', 'B3', 'ТНП', 1003, false, 1, 3);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('T-11111114', 'A4', 'B4', 'ТНП', 1004, false, 2, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('T-11111115', 'A5', 'B5', 'ТНП', 1005, false, 2, 2);
+
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('G-11111111', 'A1', 'B1', 'ТНП', 2001, false, 1, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('G-11111112', 'A2', 'B2', 'ТНП', 2002, false, 1, 2);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('G-11111113', 'A3', 'B3', 'ТНП', 2003, false, 1, 3);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('G-11111114', 'A4', 'B4', 'ТНП', 2004, false, 2, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('G-11111115', 'A5', 'B5', 'ТНП', 2005, false, 2, 2);
+
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('D-11111111', 'A1', 'B1', 'ТНП', 3001, false, 1, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('D-11111112', 'A2', 'B2', 'ТНП', 3002, false, 1, 2);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('D-11111113', 'A3', 'B3', 'ТНП', 3003, false, 1, 3);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('D-11111114', 'A4', 'B4', 'ТНП', 3004, false, 2, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('D-11111115', 'A5', 'B5', 'ТНП', 3005, false, 2, 2);
         </sql>
     </changeSet>
 
