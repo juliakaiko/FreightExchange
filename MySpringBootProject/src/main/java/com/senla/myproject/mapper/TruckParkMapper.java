@@ -16,7 +16,7 @@ public interface TruckParkMapper {
     @Mapping(target = "trucksNum", source = "park.trucksNum")
     @Mapping(target = "trucksLoadCapacity", source = "park.trucksLoadCapacity")
     @Mapping(target = "carrier", source = "park.carrier")
-    TruckParkDto toDTO (TruckPark park);
+    TruckParkDto toDto(TruckPark park);
 
     @InheritInverseConfiguration// преобразует обратно DTO в Entity
     TruckPark toEntity (TruckParkDto parkDto);

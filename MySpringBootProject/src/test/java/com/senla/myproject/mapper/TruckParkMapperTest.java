@@ -12,7 +12,7 @@ class TruckParkMapperTest {
     @Test
     public void truckParkToDTO_whenOk_thenMapFieldsCorrectly() {
         TruckPark park = TruckParkGenerator.generateTruckPark();
-        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDTO(park);
+        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDto(park);
         assertEquals(park.getId(), parkDto.getId());
         assertEquals(park.getTrucksLoadCapacity(), parkDto.getTrucksLoadCapacity());
         assertEquals(park.getCarrier(), parkDto.getCarrier());
@@ -21,7 +21,7 @@ class TruckParkMapperTest {
     @Test
     public void truckParkDtoToEntity_whenOk_thenMapFieldsCorrectly() {
         TruckPark park = TruckParkGenerator.generateTruckPark();
-        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDTO(park);
+        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDto(park);
         park = TruckParkMapper.INSTANSE.toEntity(parkDto);
         assertEquals(parkDto.getId(),park.getId());
         assertEquals(parkDto.getTrucksLoadCapacity(), park.getTrucksLoadCapacity());

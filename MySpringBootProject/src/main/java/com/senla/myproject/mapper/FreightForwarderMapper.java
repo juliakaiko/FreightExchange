@@ -18,7 +18,7 @@ public interface FreightForwarderMapper {
     @Mapping(target = "firstName", source = "forwarder.firstName")
     @Mapping(target = "surName", source = "forwarder.surName")
     @Mapping(target = "orders", source = "forwarder.orders")
-    FreightForwarderDto toDTO (FreightForwarder forwarder);
+    FreightForwarderDto toDto(FreightForwarder forwarder);
 
     @InheritInverseConfiguration// преобразует обратно DTO в Entity
     FreightForwarder toEntity (FreightForwarderDto forwarderDto);

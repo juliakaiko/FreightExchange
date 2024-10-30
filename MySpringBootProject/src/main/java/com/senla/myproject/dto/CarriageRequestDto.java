@@ -13,7 +13,6 @@ import lombok.*;
 @ToString(exclude = {"forwarder", "manager"})
 @Builder
 public class CarriageRequestDto {
-
     private Long id;
     private String orderName;
     private String startPoint;

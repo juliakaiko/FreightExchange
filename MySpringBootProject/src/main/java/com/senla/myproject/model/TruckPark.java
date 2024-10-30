@@ -2,6 +2,7 @@ package com.senla.myproject.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serializable;
@@ -23,9 +24,11 @@ public class TruckPark implements Serializable {
     private Long id;
 
     @Column (name="trucks_num")
+    @NotNull (message = "Trucks' number may not be null")
     private Integer trucksNum;
 
     @Column (name="trucks_load_capacity")
+    @NotNull(message = "Trucks' load capacity may not be null")
     private Integer trucksLoadCapacity;
 
     // один автопарк у одного перевозчика => @OneToOne
@@ -39,14 +42,4 @@ public class TruckPark implements Serializable {
         if (this.carrier != null)
             carrier.setPark(null);
     }
-
-/*
-    public Carrier getCarrier() {
-        return carrier;
-    }
-
-    public void setCarrier(Carrier carrier) {
-        this.carrier = carrier;
-        this.id = carrier.getId(); // Для отработки связи @OneToOne
-    }*/
 }

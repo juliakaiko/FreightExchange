@@ -12,14 +12,26 @@
         <dbms type="freightexchangeDB"/>
     </preConditions>-->
 
-    <changeSet id="0" author="Julia Kaiko" dbms="freightexchangeDB">
+    <!-- changeSet аналог commit-->
+    <!-- этот changeSet соответвует пустой БД-->
+    <changeSet id="0" author="julia_kaiko" dbms="freightexchangeDB">
+        <!-- tag - до этой метки можно откатить изменения-->
         <tagDatabase tag="db_init"/>
     </changeSet>
-    
+
+    <!-- relativeToChangelogFile - это файл ищется относительно db.changelog-master.xml-->
     <include file="v.1.0/db.changelog-v.1.0.xml" relativeToChangelogFile="true"/>
 
-    <changeSet id="1" author="Julia Kaiko" dbms="freightexchangeDB">
+    <!-- этот changeSet соответвует состоянию БД после v.1.0/db.changelog-v.1.0.xml -->
+    <changeSet id="1" author="julia_kaiko" dbms="freightexchangeDB">
         <tagDatabase tag="v.1.0"/>
+    </changeSet>
+
+    <include file="v-2.0/db.changelog-v.2.0.xml" relativeToChangelogFile="true"/>
+
+    <!-- этот changeSet соответвует состоянию БД после v-2.0/db.changelog-v.2.0.xml -->
+    <changeSet id="2" author="julia_kaiko">
+        <tagDatabase tag="v.2.0"/>
     </changeSet>
 
 </databaseChangeLog>

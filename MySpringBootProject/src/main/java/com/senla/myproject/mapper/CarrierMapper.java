@@ -16,7 +16,7 @@ public interface CarrierMapper {
     @Mapping(target = "name", source = "carrier.name")
     @Mapping(target = "address", source = "carrier.address")
     @Mapping(target = "park", source = "carrier.park")
-    CarrierDto toDTO (Carrier carrier);
+    CarrierDto toDto(Carrier carrier);
 
     @InheritInverseConfiguration // преобразует обратно DTO в Entity
     Carrier toEntity (CarrierDto carrierDto);

@@ -12,7 +12,7 @@ class CarrierManagerMapperTest {
     @Test
     public void managerToDTO_whenOk_thenMapFieldsCorrectly() {
         CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDTO(manager);
+        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDto(manager);
         assertEquals(manager.getId(), managerDto.getId());
         assertEquals(manager.getEmail(), managerDto.getEmail());
         assertEquals(manager.getPassword(), managerDto.getPassword());
@@ -20,12 +20,13 @@ class CarrierManagerMapperTest {
         assertEquals(manager.getFirstName(), managerDto.getFirstName());
         assertEquals(manager.getCarriers(), managerDto.getCarriers());
         assertEquals(manager.getOrders(), managerDto.getOrders());
+        assertEquals(manager.getRole(), managerDto.getRole());
     }
 
     @Test
     public void managerDtoToEntity_whenOk_thenMapFieldsCorrectly() {
         CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDTO(manager);
+        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDto(manager);
         manager = CarrierManagerMapper.INSTANSE.toEntity(managerDto);
         assertEquals(managerDto.getId(), manager.getId());
         assertEquals(managerDto.getEmail(), manager.getEmail());
@@ -34,5 +35,6 @@ class CarrierManagerMapperTest {
         assertEquals(managerDto.getFirstName(), manager.getFirstName());
         assertEquals(managerDto.getCarriers(), manager.getCarriers());
         assertEquals(managerDto.getOrders(), manager.getOrders());
+        assertEquals(managerDto.getRole(), manager.getRole());
     }
 }

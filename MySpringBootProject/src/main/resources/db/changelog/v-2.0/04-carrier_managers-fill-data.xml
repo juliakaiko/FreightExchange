@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+      http://www.liquibase.org/xml/ns/pro
+      http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd"
+        logicalFilePath="homework-2">
+
+    <changeSet id="homework-2-carrier_managers_fill_data" author="julia_kaiko">
+        <preConditions>
+            <tableExists tableName="carrier_managers"/>
+        </preConditions>
+        <sql>
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (1,1);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (1,2);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (1,3);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (2,1);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (2,2);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (3,1);
+            INSERT INTO carrier_managers (manager_id, carrier_id) VALUES (3,2);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

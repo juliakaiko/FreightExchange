@@ -1,7 +1,5 @@
 package com.senla.myproject.repository;
 
-import com.senla.myproject.model.CarrierManager;
-import com.senla.myproject.model.FreightForwarder;
 import com.senla.myproject.model.TruckPark;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -21,7 +21,7 @@ public interface CarriageRequestMapper {
     @Mapping(target = "valid", source = "order.valid")
     @Mapping(target = "forwarder", source = "order.forwarder")
     @Mapping(target = "manager", source = "order.manager")
-    CarriageRequestDto toDTO (CarriageRequest order);
+    CarriageRequestDto toDto(CarriageRequest order);
 
     @InheritInverseConfiguration// преобразует обратно DTO в Entity
     CarriageRequest toEntity (CarriageRequestDto requestDto);

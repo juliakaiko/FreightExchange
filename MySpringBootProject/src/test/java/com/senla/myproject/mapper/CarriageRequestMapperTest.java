@@ -12,7 +12,7 @@ class CarriageRequestMapperTest {
     @Test
     public void carriageRequestToDTO_whenOk_thenMapFieldsCorrectly() {
         CarriageRequest order = CarriageRequestGenerator.generateOrder();
-        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDTO(order);
+        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDto(order);
         assertEquals(order.getId(), orderDto.getId());
         assertEquals(order.getOrderName(), orderDto.getOrderName());
         assertEquals(order.getStartPoint(), orderDto.getStartPoint());
@@ -27,7 +27,7 @@ class CarriageRequestMapperTest {
     @Test
     public void carriageRequestDtoToEntity_whenOk_thenMapFieldsCorrectly() {
         CarriageRequest order = CarriageRequestGenerator.generateOrder();
-        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDTO(order);
+        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDto(order);
         order=CarriageRequestMapper.INSTANSE.toEntity(orderDto);
         assertEquals(orderDto.getId(),order.getId());
         assertEquals(orderDto.getOrderName(), order.getOrderName());

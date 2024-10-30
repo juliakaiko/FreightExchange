@@ -7,7 +7,6 @@ import com.senla.myproject.repository.*;
 import com.senla.myproject.service.impl.FreightExchangeServiceImpl;
 import com.senla.myproject.util.*;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,7 +39,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void findCarrierManagerById_thenReturnCarrierManagerDto() {
         CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDTO(manager);
+        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDto(manager);
         managerRepository.save(manager);
         //если вызывется метод getOne у репозитория, то возвращается manager
         // Стаббинг: определение поведения
@@ -79,7 +78,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void saveCarrierManager_whenCorrect_thenReturnCarrierManagerDto(){
         CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDTO(manager);
+        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDto(manager);
         CarrierManagerDto result = service.saveCarrierManager(managerDto);
 
         verify(managerRepository, times(1)).save(manager);
@@ -91,7 +90,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void deleteCarrierManagerById_whenCorrect_thenReturnCarrierManagerDto() {
         CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDTO(manager);
+        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDto(manager);
         when(managerRepository.findById(manager.getId())).thenReturn(Optional.of(manager));
 
         CarrierManagerDto result = service.deleteCarrierManagerById(1l);
@@ -106,7 +105,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void findCarrierById_whenCorrect_thenReturnCarrierDto() {
         Carrier carrier = CarrierGenerator.generateCarrier();
-        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDTO(carrier);
+        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDto(carrier);
 
         when(carrierRepository.findById(carrier.getId())).thenReturn(Optional.of(carrier));
 
@@ -120,7 +119,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void saveCarrier_whenCorrect_thenReturnCarrierDto() {
         Carrier carrier = CarrierGenerator.generateCarrier();
-        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDTO(carrier);
+        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDto(carrier);
         CarrierDto result = service.saveCarrier(carrierDto);
 
         verify(carrierRepository, times(1)).save(carrier);
@@ -132,7 +131,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void deleteCarrierById_whenCorrect_thenReturnCarrierDto() {
         Carrier carrier = CarrierGenerator.generateCarrier();
-        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDTO(carrier);
+        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDto(carrier);
         when(carrierRepository.findById(carrier.getId())).thenReturn(Optional.of(carrier));
 
         CarrierDto result = service.deleteCarrierById(carrier.getId());
@@ -169,7 +168,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void findFreightForwarderById_whenCorrect_thenReturnFreightForwarderDto() {
         FreightForwarder forwarder = FreightForwarderGenerator.generateFreightForwarder();
-        FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDTO(forwarder);
+        FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDto(forwarder);
 
         when(forwarderRepository.findById(forwarder.getId())).thenReturn(Optional.of(forwarder));
 
@@ -183,7 +182,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void saveFreightForwarder_whenCorrect_thenReturnFreightForwarderDto() {
         FreightForwarder forwarder = FreightForwarderGenerator.generateFreightForwarder();
-        FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDTO(forwarder);
+        FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDto(forwarder);
         FreightForwarderDto result = service.saveFreightForwarder(forwarderDto);
 
         verify(forwarderRepository, times(1)).save(forwarder);
@@ -195,7 +194,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void deleteFreightForwarderById_whenCorrect_thenReturnFreightForwarderDto() {
         FreightForwarder forwarder = FreightForwarderGenerator.generateFreightForwarder();
-        FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDTO(forwarder);
+        FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDto(forwarder);
         when(forwarderRepository.findById(forwarder.getId())).thenReturn(Optional.of(forwarder));
 
         FreightForwarderDto result = service.deleteFreightForwarderById(forwarder.getId());
@@ -232,7 +231,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void findOrderById_whenCorrect_thenReturnOrderDto() {
         CarriageRequest order = CarriageRequestGenerator.generateOrder();
-        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDTO(order);
+        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDto(order);
 
         when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
 
@@ -246,7 +245,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void saveOrder_whenCorrect_thenReturnOrderDto() {
         CarriageRequest order = CarriageRequestGenerator.generateOrder();
-        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDTO(order);
+        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDto(order);
 
         CarriageRequestDto result = service.saveOrder(orderDto);
 
@@ -259,7 +258,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void deleteOrderById_whenCorrect_thenReturnOrderDto() {
         CarriageRequest order = CarriageRequestGenerator.generateOrder();
-        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDTO(order);
+        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDto(order);
         when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
 
         CarriageRequestDto result = service.deleteOrderById(order.getId());
@@ -296,7 +295,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void findTruckParkById_whenCorrect_thenReturnTruckParkDto() {
         TruckPark park = TruckParkGenerator.generateTruckPark();
-        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDTO(park);
+        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDto(park);
 
         when(parkRepository.findById(park.getId())).thenReturn(Optional.of(park));
 
@@ -312,7 +311,7 @@ public class FreightExchangeServiceImplTest {
         TruckPark park = TruckParkGenerator.generateTruckPark();
         Carrier carrier = CarrierGenerator.generateCarrier();
         park.setCarrier(carrier);
-        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDTO(park);
+        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDto(park);
 
         TruckParkDto result = service.saveTruckPark(parkDto);
 
@@ -325,7 +324,7 @@ public class FreightExchangeServiceImplTest {
     @Test
     public void deleteTruckParkById_whenCorrect_thenReturnTruckParkDto() {
         TruckPark park = TruckParkGenerator.generateTruckPark();
-        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDTO(park);
+        TruckParkDto parkDto = TruckParkMapper.INSTANSE.toDto(park);
         when(parkRepository.findById(park.getId())).thenReturn(Optional.of(park));
 
         TruckParkDto result = service.deleteTruckParkById(park.getId());

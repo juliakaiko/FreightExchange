@@ -19,7 +19,7 @@ public interface CarrierManagerMapper {
     @Mapping(target = "surName", source = "manager.surName")
     @Mapping(target = "carriers", source = "manager.carriers")
     @Mapping(target = "orders", source = "manager.orders")
-    CarrierManagerDto toDTO(CarrierManager manager);
+    CarrierManagerDto toDto(CarrierManager manager);
 
     @InheritInverseConfiguration // преобразует обратно DTO в Entity
     CarrierManager toEntity (CarrierManagerDto managerDto);

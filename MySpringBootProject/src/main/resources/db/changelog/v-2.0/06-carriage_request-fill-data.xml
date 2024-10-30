@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+      http://www.liquibase.org/xml/ns/pro
+      http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd"
+        logicalFilePath="homework-2">
+
+    <changeSet id="homework-2_carriage_request_fill_data" author="Julia Kaiko">
+        <preConditions>
+            <tableExists tableName="carriage_request"/>
+        </preConditions>
+        <sql>
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('N-12345678', 'Варшава', 'Вустермак', 'товары IKEA', 900, true, 3);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('N-87654321', 'Брест', 'Москва', 'Клей', 1700, true, 2);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('N-32765487', 'Можайск', 'Брест', 'Каучук', 600, true, 2);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('N-85632190', 'Брест', 'Владимир', 'Конфеты', 2000, false, 3, 3);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, manager_id, forwarder_id)  VALUES ('N-85600045', 'Москва', 'Минск', 'Полипропилен', 200, false, 1, 2);
+
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('А-11111111', 'Атырау', 'Bаршава', 'Полипропилен', 3200, true, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('А-11111112', 'Атырау', 'Белград', 'Полипропилен', 4100, true, 2);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('А-11111113', 'Атырау', 'Воронеж', 'Полипропилен', 800, true, 3);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('А-11111114', 'Атырау', 'Прага', 'Полипропилен', 4200, true, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('А-11111115', 'Атырау', 'Москва', 'Полипропилен', 1000, true, 2);
+
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('F-11111111', 'Belsk Duzy', 'Midnen', 'Кондитерские изделия', 1300, true, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('F-11111112', 'Belsk Duzy', 'Stadtallendorf', 'Кондитерские изделия', 1400, true, 2);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('F-11111113', 'Belsk Duzy', 'Bollberg', 'Кондитерские изделия', 1200, true, 3);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('F-11111114', 'Belsk Duzy', 'Leuna', 'Кондитерские изделия', 1200, true, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('F-11111115', 'Belsk Duzy', 'Amsterdam', 'Кондитерские изделия', 2000, true, 2);
+
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('D-11111111', 'Лейпциг', 'Лешково', 'Медикаменты', 5200, true, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('D-11111112', 'Херфорд', 'Пушкино', 'Медикаменты', 5300, true, 2);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('D-11111113', 'Вена', 'Лешково', 'Медикаменты', 5000, true, 3);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('D-11111114', 'Киль', 'Минск', 'Медикаменты', 4300, true, 1);
+            INSERT INTO carriage_request (order_name, start_point, finish_point, cargo, freight, valid, forwarder_id)  VALUES ('D-11111115', 'Берлин', 'Подольск', 'Медикаменты', 5100, true, 2);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

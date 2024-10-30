@@ -12,7 +12,7 @@ class CarrierMapperTest {
     @Test
     public void carrierToDTO_whenOk_thenMapFieldsCorrectly() {
         Carrier carrier = CarrierGenerator.generateCarrier();
-        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDTO(carrier);
+        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDto(carrier);
         assertEquals(carrier.getId(), carrierDto.getId());
         assertEquals(carrier.getName(), carrierDto.getName());
         assertEquals(carrier.getAddress(), carrierDto.getAddress());
@@ -23,7 +23,7 @@ class CarrierMapperTest {
     @Test
     public void carrierDtoToEntity_whenOk_thenMapFieldsCorrectly() {
         Carrier carrier = CarrierGenerator.generateCarrier();
-        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDTO(carrier);
+        CarrierDto carrierDto = CarrierMapper.INSTANSE.toDto(carrier);
         carrier = CarrierMapper.INSTANSE.toEntity(carrierDto);
         assertEquals(carrierDto.getId(), carrier.getId());
         assertEquals(carrierDto.getName(), carrier.getName());

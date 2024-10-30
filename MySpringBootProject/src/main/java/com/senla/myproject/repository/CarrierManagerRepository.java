@@ -1,6 +1,5 @@
 package com.senla.myproject.repository;
 
-import com.senla.myproject.model.CarriageRequest;
 import com.senla.myproject.model.CarrierManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +14,9 @@ import java.util.Optional;
 public interface CarrierManagerRepository extends JpaRepository<CarrierManager, Long> {
 
     @EntityGraph(value = "carrier_manager_entity_graph")
-    CarrierManager findCarrierManagerWithEntityGraphByEmail(String email);
+    Optional <CarrierManager> findCarrierManagerWithEntityGraphByEmail(String email);
+
+    Optional <CarrierManager> findCarrierManagerByEmailIsLike(String email);
 
     @Query(value = "select * from carrier_manager", nativeQuery = true) //nativeQuery = true - SQL
     Page<CarrierManager> findAllManagersNative(Pageable pageable);

@@ -1,8 +1,9 @@
 package com.senla.myproject.util;
 
-import com.senla.myproject.model.CarrierManager;
 import com.senla.myproject.model.FreightForwarder;
 import lombok.experimental.UtilityClass;
+
+import static com.senla.myproject.model.Role.FORWARDER;
 
 @UtilityClass //делает класс статическим и запрещает его наследование.
 public class FreightForwarderGenerator {
@@ -13,6 +14,7 @@ public class FreightForwarderGenerator {
                 .surName("TestSurName")
                 .email("test@test.by")
                 .password("test")
+                .role(FORWARDER)
                 .build();
     }
 }

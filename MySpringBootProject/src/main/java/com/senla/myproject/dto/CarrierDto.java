@@ -15,11 +15,11 @@ import java.util.Set;
 @ToString(exclude = {"carrierManagers", "park"})
 @Builder
 public class CarrierDto {
-    private long id;
+    private Long id;
     private String name;
     private String address;
     private TruckPark park;
     @JsonIgnore
-    private Set<CarrierManager> carrierManagers; //= new HashSet<>();
+    private Set<CarrierManager> carrierManagers;
 
 }

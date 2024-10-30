@@ -13,7 +13,7 @@ public class CarriageRequestGenerator {
                 .freight(55555L)
                 .startPoint("A")
                 .finishPoint("B")
-                .valid(false)
+                .valid(true)
                 .build();
     }
 }

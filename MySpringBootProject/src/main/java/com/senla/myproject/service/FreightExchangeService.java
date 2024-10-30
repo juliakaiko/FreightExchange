@@ -1,6 +1,5 @@
 package com.senla.myproject.service;
 
-
 import com.senla.myproject.dto.*;
 import com.senla.myproject.model.*;
 import org.springframework.data.domain.Page;
@@ -13,13 +12,14 @@ public interface FreightExchangeService {
     List<CarrierManager> findAllCarrierManagers();
     CarrierManagerDto saveCarrierManager(CarrierManagerDto userDTO);
     CarrierManagerDto deleteCarrierManagerById(Long id);
+    CarrierManagerDto findCarrierManagerByEmailIsLike(String email);
     //EntityGraph
     CarrierManagerDto findCarrierManagerWithEntityGraphByEmail(String email);
 
     Page<CarrierManagerDto> findAllManagersNativeWithPagination(int page, int size);
 
-
     FreightForwarderDto findFreightForwarderById(Long id);
+    FreightForwarderDto findFreightForwarderByEmailIsLike (String email);
     FreightForwarderDto saveFreightForwarder(FreightForwarderDto userDTO);
     FreightForwarderDto deleteFreightForwarderById(Long id);
     List <FreightForwarder> findAllForwarders();
@@ -33,10 +33,13 @@ public interface FreightExchangeService {
 
     CarriageRequestDto findOrderById(Long id);
     CarriageRequestDto findOrderByName(String orderName);
+    CarriageRequestDto takeValidOrder(CarrierManager manager, String orderName);
+    CarriageRequestDto cancelOrder(CarrierManager manager, String orderName);
     CarriageRequestDto saveOrder(CarriageRequestDto carriageRequestDTO);
     CarriageRequestDto deleteOrderById(Long id);
     List<CarriageRequest> findAllOrders();
     Page<CarriageRequestDto> findAllOrdersNativeWithPagination(int page, int size);
+    List<CarriageRequest> findAllFreeOrders();
 
     TruckParkDto findTruckParkById(Long id);
     TruckParkDto saveTruckPark(TruckParkDto parkDTO);

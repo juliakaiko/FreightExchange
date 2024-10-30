@@ -11,7 +11,6 @@ import lombok.*;
 @ToString
 @Builder
 public class TruckParkDto {
-
     private Long id;
     private Integer trucksNum;
     private Integer trucksLoadCapacity;
