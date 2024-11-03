@@ -14,9 +14,9 @@
             <tableExists tableName="freight_forwarder"/>
         </preConditions>
         <sql>
-            INSERT INTO freight_forwarder (surname, firstname, email, password) VALUES ('Туминас', 'Мирослав', 'tuminas@gmail.com', '{noop}111111');
-            INSERT INTO freight_forwarder (surname, firstname, email, password) VALUES ('Калнини', 'Диана', 'kalnini@gmail.com', '{noop}22222');
-            INSERT INTO freight_forwarder (surname, firstname, email, password) VALUES ('Гинтаутас', 'Екатерина', 'gintaytas@gmail.com', '{noop}33333');
+            INSERT INTO freight_forwarder (surname, firstname, email, password) VALUES ('Туминас', 'Мирослав', 'tuminas@gmail.com', '{bcrypt}$2a$12$nhwEpdoi49H0Li5s8Wl4iuY9RKaqsKHgTvUzxiHD66BDoOPlVCT06'); <!-- 12345-->
+            INSERT INTO freight_forwarder (surname, firstname, email, password) VALUES ('Калнини', 'Диана', 'kalnini@gmail.com', '{bcrypt}$2a$12$/3OsmltyUMcQK/N5Uz6C1.YL9O9N5y2umQxijeHxtB99ru6OcIFe2');<!-- 22222-->
+            INSERT INTO freight_forwarder (surname, firstname, email, password) VALUES ('Гинтаутас', 'Екатерина', 'gintaytas@gmail.com', '{bcrypt}$2a$12$sthApEoNexCQ4a0HstCRqeq5ymNvmFPOOR4TnD6Lw23z1x08kMPC6');<!-- 33333-->
         </sql>
     </changeSet>
 

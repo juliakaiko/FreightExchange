@@ -15,9 +15,9 @@
             <tableExists tableName="carrier_manager"/>
         </preConditions>
         <sql>
-            INSERT INTO carrier_manager (surname, firstname, email, password) VALUES ('Кайко', 'Юлия', 'kaiko@gmail.com', '{noop}12345');
-            INSERT INTO carrier_manager (surname, firstname, email, password) VALUES ('Иванов', 'Иван', 'ivanov@gmail.com', '{noop}23456');
-            INSERT INTO carrier_manager (surname, firstname, email, password) VALUES ('Петров', 'Петр', 'petrov@gmail.com', '{noop}34567');
+            INSERT INTO carrier_manager (surname, firstname, email, password) VALUES ('Кайко', 'Юлия', 'kaiko@gmail.com', '{bcrypt}$2a$12$v9K4Vz3rE1ayQJPKnfY/O.jwS.duhxmgIQHUcoSjWGpuUmns16Ea.');<!-- 12345-->
+            INSERT INTO carrier_manager (surname, firstname, email, password) VALUES ('Иванов', 'Иван', 'ivanov@gmail.com', '{bcrypt}$2a$12$8XuWTj3px0CSk1HMEHbEwetXZcWC91NpI3wgkAgAD/oRr1t7uy8mS'); <!-- 23456-->
+            INSERT INTO carrier_manager (surname, firstname, email, password) VALUES ('Петров', 'Петр', 'petrov@gmail.com', '{bcrypt}$2a$12$WB7SuqXxCz2GpqF/omeceupN4Qb1Si7m0nCMrw6viSQkdOTGq6WqK');<!-- 23456-->
         </sql>
     </changeSet>
 

@@ -34,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest (controllers = CarrierManagerRegistrationController.class)
 @Slf4j // для логирования
 @WithMockUser // тестрирование с аутентифицированным пользователем
+//@AutoConfigureMockMvc(addFilters = false)
 public class CarrierManagerRegistrationControllerTest {
 
     @MockBean // объект добавляет в Spring ApplicationContext в отличие от @Mock => заменяет бин на мок в контексте

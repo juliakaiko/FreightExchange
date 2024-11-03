@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
@@ -60,5 +62,18 @@ public class CarrierRepositoryImplTest {
         this.carrierRepository.save(expectedCarrier);
         log.info("Test to find all the Carriers: "+ this.carrierRepository.findAll());
         Assertions.assertFalse(this.carrierRepository.findAll().isEmpty(),() -> "List of carriers shouldn't be empty");
+    }
+
+    @Test
+    public void findAllCarriersNative() {
+        this.carrierRepository.save(expectedCarrier);
+        log.info("Test to find findAllCarriersNative()");
+        var pageable  = PageRequest.of(0,1, Sort.by("id"));
+        var slice = this.carrierRepository.findAllCarriersNative(pageable);
+        slice.forEach(carrier -> System.out.println(carrier));
+        while (slice.hasNext()){
+            slice = this.carrierRepository.findAllCarriersNative(slice.nextPageable());
+            slice.forEach(carrier -> System.out.println(carrier));
+        }
     }
 }

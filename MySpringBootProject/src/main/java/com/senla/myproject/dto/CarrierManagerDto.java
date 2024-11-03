@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.senla.myproject.model.CarriageRequest;
 import com.senla.myproject.model.Carrier;
 import java.util.Set;
-
 import com.senla.myproject.model.Role;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -16,14 +18,32 @@ import lombok.*;
 @ToString(exclude = {"carriers", "orders"})
 @Builder
 public class CarrierManagerDto {
+
     private Long id;
+
+    @Email(regexp="\\w+@\\w+\\.\\w+", message="Please provide a valid email address") //  .+@.+\..+
+    @NotBlank(message = "Email address may not be empty")
     private String email;
+
+    @NotBlank (message = "Password may not be empty")
+    @Size(min=5, max=255, message = "Password size must be between 5 and 255")
     private String password;
+
+    @NotBlank(message = "Firstname may not be empty")
+    @Size(min=2, max=50, message = "Firstname size must be between 2 and 50")
     private String firstName;
+
+    @NotBlank(message = "Surname may not be empty")
+    @Size(min=2, max=50, message = "Surname size must be between 2 and 50")
     private String surName;
+
     private Role role;
+
     @JsonIgnore
     private Set<Carrier> carriers;
-    //@JsonIgnore
+
+    @JsonIgnore
     private Set<CarriageRequest> orders;
 }
+
+

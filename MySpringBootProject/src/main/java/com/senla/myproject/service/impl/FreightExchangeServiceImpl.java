@@ -14,23 +14,43 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FreightExchangeServiceImpl implements FreightExchangeService {
+public class FreightExchangeServiceImpl implements FreightExchangeService, UserDetailsService {
     private final CarrierRepository carrierRepository;
     private final CarrierManagerRepository managerRepository;
     private final FreightForwarderRepository forwarderRepository;
     private final CarriageRequestRepository orderRepository;
     private final TruckParkRepository parkRepository;
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User userFromDb = null;
+        Optional<CarrierManager> manager = managerRepository.findCarrierManagerByEmailIsLike(username);
+        Optional<FreightForwarder> forwarder = forwarderRepository.findFreightForwarderByEmailIsLike(username);
+        if (manager.isPresent()){
+            userFromDb = manager.get();
+        }
+        if (forwarder.isPresent()){
+            userFromDb = forwarder.get();
+        }
+        Optional <User> optionalUser = Optional.ofNullable(userFromDb);
+        return optionalUser.map(user -> new org.springframework.security.core.userdetails.User(
+                optionalUser.get().getEmail(),
+                optionalUser.get().getPassword(),
+                Collections.singleton(optionalUser.get().getRole())
+        )).orElseThrow(() -> new UsernameNotFoundException(username+ " not found"));
+    }
 
     //CarrierManager
     @Override
@@ -71,8 +91,8 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CarrierManagerDto> findAllManagersNativeWithPagination(int page, int size) {
-        log.info("FROM SERVISE: findAllManagersNativeWithPaginatio()");
+    public Page<CarrierManagerDto> findAllManagersNativeWithPagination(Integer page, Integer size) {
+        log.info("FROM SERVISE: findAllManagersNativeWithPagination()");
         var pageable  = PageRequest.of(page,size, Sort.by("id"));
         Page<CarrierManager> managerList = managerRepository.findAllManagersNative(pageable);
         Page<CarrierManagerDto> managerDtos = managerList.map(CarrierManagerMapper.INSTANSE::toDto);
@@ -97,7 +117,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
         return CarrierManagerMapper.INSTANSE.toDto(manager.get());
     }
 
-    //Carrier
+    ///////////////////////////////////////Carrier
     @Override
     @Transactional(readOnly = true)
     public CarrierDto findCarrierById(Long id) {
@@ -134,7 +154,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CarrierDto> findAllCarriersNativeWithPagination(int page, int size) {
+    public Page<CarrierDto> findAllCarriersNativeWithPagination(Integer page, Integer size) {
         log.info("FROM SERVISE: findAllCarriersNativeWithPagination()");
         var pageable  = PageRequest.of(page,size, Sort.by("id"));
         Page<Carrier> carrierList = carrierRepository.findAllCarriersNative(pageable);
@@ -142,7 +162,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
         return carrierDtos;
     }
 
-    //FreightForwarder
+    ///////////////////////////////////////FreightForwarder
     @Override
     @Transactional(readOnly = true)
     public FreightForwarderDto findFreightForwarderById(Long id) {
@@ -189,7 +209,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FreightForwarderDto> findAllForwardersNativeWithPagination(int page, int size) {
+    public Page<FreightForwarderDto> findAllForwardersNativeWithPagination(Integer page, Integer size) {
         log.info("FROM SERVISE: findAllForwardersNativeWithPagination()");
         var pageable  = PageRequest.of(page,size, Sort.by("id"));
         Page<FreightForwarder> forwarderList = forwarderRepository.findAllFreightForwardersNative(pageable);
@@ -300,7 +320,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CarriageRequestDto> findAllOrdersNativeWithPagination(int page, int size) {
+    public Page<CarriageRequestDto> findAllOrdersNativeWithPagination(Integer page, Integer size) {
         log.info("FROM SERVISE: findAllOrdersNativeWithPagination()");
         var pageable  = PageRequest.of(page,size, Sort.by("id"));
         Page<CarriageRequest> orderList = orderRepository.findAllOrdersNative(pageable);
@@ -345,7 +365,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<TruckParkDto> findAllTruckParksNativeWithPagination(int page, int size) {
+    public Page<TruckParkDto> findAllTruckParksNativeWithPagination(Integer page, Integer size) {
         log.info("FROM SERVISE: findAllTruckParksNativeWithPagination()");
         var pageable  = PageRequest.of(page,size);
         Page<TruckPark> parkList = parkRepository.findAllTruckParksNative(pageable);

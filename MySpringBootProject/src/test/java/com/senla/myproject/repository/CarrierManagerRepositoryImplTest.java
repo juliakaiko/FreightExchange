@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
@@ -24,7 +26,7 @@ public class CarrierManagerRepositoryImplTest {
     private static CarrierManager expectedManager;
 
     @BeforeClass
-    public static void  setUp(){
+    public static void setUp(){
         expectedManager = CarrierManagerGenerator.generateCarrierManager();
     }
 
@@ -60,5 +62,38 @@ public class CarrierManagerRepositoryImplTest {
         this.managerRepository.save(expectedManager);
         log.info("Test to find all the CarrierManagers : "+ this.managerRepository.findAll());
         Assertions.assertFalse(this.managerRepository.findAll().isEmpty(),() -> "List of managers shouldn't be empty");
+    }
+
+    @Test
+    public void findCarrierManagerWithEntityGraphByEmail() {
+        this.managerRepository.save(expectedManager);
+        String email = expectedManager.getEmail();
+        log.info("Test to find CarrierManagerWithEntityGraphByEmail() : "+ email);
+        Optional<CarrierManager> actualManager = managerRepository.findCarrierManagerWithEntityGraphByEmail(email);
+        Assert.assertNotNull(actualManager);
+        Assert.assertEquals(expectedManager, actualManager.get());
+    }
+
+    @Test
+    public void findCarrierManagerByEmailIsLike() {
+        this.managerRepository.save(expectedManager);
+        String email = expectedManager.getEmail();
+        log.info("Test to find CarrierManagerByEmail() : "+ email);
+        Optional<CarrierManager> actualManager = managerRepository.findCarrierManagerByEmailIsLike(email);
+        Assert.assertNotNull(actualManager);
+        Assert.assertEquals(expectedManager, actualManager.get());
+    }
+
+    @Test
+    public void findAllManagersNative() {
+        this.managerRepository.save(expectedManager);
+        log.info("Test to find findAllManagersNative()");
+        var pageable  = PageRequest.of(0,1, Sort.by("id"));
+        var slice = this.managerRepository.findAllManagersNative(pageable);
+        slice.forEach(manager -> System.out.println(manager));
+        while (slice.hasNext()){
+            slice = this.managerRepository.findAllManagersNative(slice.nextPageable());
+            slice.forEach(manager -> System.out.println(manager));
+        }
     }
 }

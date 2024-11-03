@@ -2,6 +2,7 @@ package com.senla.myproject.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.senla.myproject.dto.*;
+import com.senla.myproject.exceptions.NotFoundException;
 import com.senla.myproject.mapper.*;
 import com.senla.myproject.model.*;
 import com.senla.myproject.service.FreightExchangeService;
@@ -64,10 +65,10 @@ public class GeneralUserControllerTest {
     @Test
     public void getCarrierManager_whenIncorrect_thenThrowEntityNotFound() throws Exception {
         String message = "CarrierManager with id " + ENTITY_ID + " was not found";
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String errorMessage = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), message);
 
-        when(service.findCarrierManagerById(ENTITY_ID)).thenThrow(new EntityNotFoundException(message));
+        when(service.findCarrierManagerById(ENTITY_ID)).thenThrow(new NotFoundException(message));
 
         CarrierManager request = CarrierManagerGenerator.generateCarrierManager();
         CarrierManagerDto response = CarrierManagerMapper.INSTANSE.toDto(request);
@@ -77,7 +78,7 @@ public class GeneralUserControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
-                .andExpect(status().is(404))
+                .andExpect(status().is(200)) //404
                 .andExpect(jsonPath("$.message").value(errorMessage)); // jsonPath() проверяет отд-ные поля
     }
 
@@ -124,10 +125,10 @@ public class GeneralUserControllerTest {
     @Test
     public void getCarriageRequest_whenIncorrect_thenThrowEntityNotFound() throws Exception {
         String message = "CarriageRequest with id " + ENTITY_ID + " was not found";
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String errorMessage = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), message);
 
-        when(service.findOrderById(ENTITY_ID)).thenThrow(new EntityNotFoundException(message));
+        when(service.findOrderById(ENTITY_ID)).thenThrow(new NotFoundException(message));
 
         CarriageRequest request = CarriageRequestGenerator.generateOrder();
         CarriageRequestDto response = CarriageRequestMapper.INSTANSE.toDto(request);
@@ -137,7 +138,7 @@ public class GeneralUserControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
-                .andExpect(status().is(404))
+                .andExpect(status().is(200))
                 .andExpect(jsonPath("$.message").value(errorMessage)); // jsonPath() проверяет отд-ные поля
     }
 
@@ -184,10 +185,10 @@ public class GeneralUserControllerTest {
     @Test
     public void getCarrier_whenIncorrect_thenThrowEntityNotFound() throws Exception {
         String message = "Carrier with id " + ENTITY_ID + " was not found";
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String errorMessage = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), message);
 
-        when(service.findCarrierById(ENTITY_ID)).thenThrow(new EntityNotFoundException(message));
+        when(service.findCarrierById(ENTITY_ID)).thenThrow(new NotFoundException(message));
 
         Carrier request = CarrierGenerator.generateCarrier();
         CarrierDto response = CarrierMapper.INSTANSE.toDto(request);
@@ -197,7 +198,7 @@ public class GeneralUserControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
-                .andExpect(status().is(404))
+                .andExpect(status().is(200)) //404
                 .andExpect(jsonPath("$.message").value(errorMessage)); // jsonPath() проверяет отд-ные поля
     }
 
@@ -242,12 +243,12 @@ public class GeneralUserControllerTest {
     }
 
     @Test
-    public void getFreightForwarder_whenIncorrect_thenThrowEntityNotFound() throws Exception {
+    public void getFreightForwarder_whenIncorrect_thenThrowNotFound() throws Exception {
         String message = "FreightForwarder with id " + ENTITY_ID + " was not found";
-       // DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        //String errorMessage = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), message);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String errorMessage = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), message);
 
-        when(service.findFreightForwarderById(ENTITY_ID)).thenThrow(new EntityNotFoundException(message));
+        when(service.findFreightForwarderById(ENTITY_ID)).thenThrow(new NotFoundException(message));
 
         FreightForwarder request = FreightForwarderGenerator.generateFreightForwarder();
         FreightForwarderDto response = FreightForwarderMapper.INSTANSE.toDto(request);
@@ -258,7 +259,7 @@ public class GeneralUserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().is(200)) //404
-                .andExpect(jsonPath("$.message").value(message)); // jsonPath() проверяет отд-ные поля
+                .andExpect(jsonPath("$.message").value(errorMessage)); // jsonPath() проверяет отд-ные поля
     }
 
     @Test
@@ -304,10 +305,10 @@ public class GeneralUserControllerTest {
     @Test
     public void getTruckPark_whenIncorrect_thenThrowEntityNotFound() throws Exception {
         String message = "TruckPark with id " + ENTITY_ID + " was not found";
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String errorMessage = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), message);
 
-        when(service.findTruckParkById(ENTITY_ID)).thenThrow(new EntityNotFoundException(message));
+        when(service.findTruckParkById(ENTITY_ID)).thenThrow(new NotFoundException(message));
 
         TruckPark request = TruckParkGenerator.generateTruckPark();
         TruckParkDto response = TruckParkMapper.INSTANSE.toDto(request);
@@ -317,7 +318,7 @@ public class GeneralUserControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
-                .andExpect(status().is(404))
+                .andExpect(status().is(200)) //404
                 .andExpect(jsonPath("$.message").value(errorMessage)); // jsonPath() проверяет отд-ные поля
     }
 

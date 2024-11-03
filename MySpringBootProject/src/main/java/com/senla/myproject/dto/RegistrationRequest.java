@@ -1,26 +1,21 @@
 package com.senla.myproject.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.senla.myproject.model.CarriageRequest;
-import java.util.Set;
-
 import com.senla.myproject.model.Role;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(exclude = {"orders"})
-@ToString(exclude = {"orders"})
+@Data
+@ToString
 @Builder
-public class FreightForwarderDto {
-    private Long id;
+@Schema(description = "Registration Request")
+public class RegistrationRequest {
 
-    @Email(regexp="\\w+@\\w+\\.\\w+", message="Please provide a valid email address") //  .+@.+\..+
+    @Email(regexp="\\w+@\\w+\\.\\w+", message="Please provide a valid email address") //  .+@.+\..+   \w+@\w+\.\w+
     @NotBlank(message = "Email address may not be empty")
     private String email;
 
@@ -36,9 +31,6 @@ public class FreightForwarderDto {
     @Size(min=2, max=50, message = "Surname size must be between 2 and 50")
     private String surName;
 
+    //@EnumNamePattern(regexp = "MANAGER|FORWARDER")
     private Role role;
-
-    @JsonIgnore
-    private Set<CarriageRequest> orders;
-
 }

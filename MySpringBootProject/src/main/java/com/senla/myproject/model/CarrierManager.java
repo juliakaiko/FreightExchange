@@ -4,15 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.ColumnDefault;
-/*import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;*/
-
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -47,7 +40,6 @@ public class CarrierManager extends User implements Serializable { // UserDetail
     @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY,cascade = CascadeType.MERGE, orphanRemoval = false) // cascade = CascadeType.ALL
     @JsonIgnore
     private Set<CarriageRequest> orders = new HashSet<>();
-
 
     @PreRemove
     private void preRemove() {

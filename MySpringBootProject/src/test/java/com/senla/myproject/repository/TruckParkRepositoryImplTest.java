@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
@@ -60,5 +62,18 @@ public class TruckParkRepositoryImplTest {
         this.parkRepository.save(expectedPark);
         log.info("Test to find all the TruckParks : "+ this.parkRepository.findAll());
         Assertions.assertFalse(this.parkRepository.findAll().isEmpty(), () -> "List of truck's parks shouldn't be empty");
+    }
+
+    @Test
+    public void findAllParksNative() {
+        this.parkRepository.save(expectedPark);
+        log.info("Test to find findAllParksNative()");
+        var pageable  = PageRequest.of(0,1);
+        var slice = this.parkRepository.findAllTruckParksNative(pageable);
+        slice.forEach(park -> System.out.println(park));
+        while (slice.hasNext()){
+            slice = this.parkRepository.findAllTruckParksNative(slice.nextPageable());
+            slice.forEach(park -> System.out.println(park));
+        }
     }
 }

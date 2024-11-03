@@ -6,58 +6,84 @@ import com.senla.myproject.exceptions.NotFoundException;
 import com.senla.myproject.exceptions.OrderNotValidException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice(annotations = UserExceptionHandler.class)
 public class UserAdvice {
 
-    @ExceptionHandler({NotFoundException.class})
-    public ResponseEntity handleNotFoundException(NotFoundException e) { //<ErrorItem>
-        ErrorItem error = generateMessage(e);
-        return ResponseEntity.ok(error);
-    }
-
-    @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity handleProgrammEntityNotFoundException(EntityNotFoundException e) { //<ErrorItem>
-        ErrorItem error = generateMessage(e);
-        return ResponseEntity.ok(error);
-    }
-
-    @ExceptionHandler({NoSuchElementException.class})
-    public ResponseEntity handleNoSuchElementException(NoSuchElementException e) { //<ErrorItem>
-        ErrorItem error = generateMessage(e);
-        return ResponseEntity.ok(error);
-    }
-
-    @ExceptionHandler({OrderNotValidException.class})
-    public ResponseEntity handleOrderNotValidException(OrderNotValidException e) { //<ErrorItem>
-        ErrorItem error = generateMessage(e);
-        return ResponseEntity.ok(error);
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity <ErrorItem> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        ErrorItem error = new ErrorItem();
+        error.setStatus(e.getStatusCode().value());
+        String errors = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(x -> x.getDefaultMessage())
+                .collect(Collectors.toList())
+                .toString();
+        error.setMessage(errors);
+        error.setTimestamp(formatDate());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({ConstraintViolationException.class})
-    public ResponseEntity handleValidationException(ConstraintViolationException e) { //<ErrorItem>
+    public ResponseEntity <ErrorItem> handleValidationException(ConstraintViolationException e) {
         ErrorItem error = generateMessage(e);
-        return ResponseEntity.ok(error);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({AuthorizationDeniedException.class})
-    public ResponseEntity handleAuthorizationDeniedException(AuthorizationDeniedException e) { //<ErrorItem>
+    @ExceptionHandler({NotFoundException.class})
+    public ResponseEntity <ErrorItem> handleNotFoundException(NotFoundException e) {
         ErrorItem error = generateMessage(e);
-        return ResponseEntity.ok(error);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({EntityNotFoundException.class})
+    public ResponseEntity <ErrorItem> handleEntityNotFoundException(EntityNotFoundException e) {
+        ErrorItem error = generateMessage(e);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({NoSuchElementException.class})
+    public ResponseEntity <ErrorItem> handleNoSuchElementException(NoSuchElementException e) {
+        ErrorItem error = generateMessage(e);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({OrderNotValidException.class})
+    public ResponseEntity <ErrorItem> handleOrderNotValidException(OrderNotValidException e) {
+        ErrorItem error = generateMessage(e);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler({AuthorizationDeniedException.class})
+    public ResponseEntity <ErrorItem> handleAuthorizationDeniedException(AuthorizationDeniedException e) {
+        ErrorItem error = generateMessage(e);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     public ErrorItem generateMessage(Exception e){
         ErrorItem error = new ErrorItem();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String message = String.format("%s %s", LocalDateTime.now().format(dateTimeFormatter), e.getMessage());
-        error.setMessage(message);
+        error.setTimestamp(formatDate());
+        error.setMessage(e.getMessage());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
         return error;
+    }
+
+    public String formatDate(){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String data = dateTimeFormatter.format( LocalDateTime.now() );
+        return data;
     }
 }

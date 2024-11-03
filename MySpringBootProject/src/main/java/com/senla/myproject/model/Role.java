@@ -7,8 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 public enum Role implements GrantedAuthority { //GrantedAuthority - это полномочия, которые предоставляются пользователю
 
     MANAGER ("MANAGER"),
-    FORWARDER ("FORWARDER"),
-    ADMIN("ADMIN");
+    FORWARDER ("FORWARDER");
+    //ADMIN("ADMIN");
 
     private final String roleName;
 

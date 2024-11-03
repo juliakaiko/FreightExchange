@@ -42,7 +42,7 @@ public class CarriageRequestRepositoryImplTest {
     @Test
     public void findByOrderNameIsLike() {
         this.orderRepository.save(expectedOrder);
-        Optional<CarriageRequest> actualOrder = orderRepository.findById(1L);
+        Optional<CarriageRequest> actualOrder = orderRepository.findByOrderNameIsLike(expectedOrder.getOrderName());
         log.info("Test to find the Order with name "+actualOrder.get().getOrderName()+" :"+actualOrder.get());
         Assert.assertTrue(actualOrder.isPresent());
         actualOrder.ifPresent(expectedOrder -> Assert.assertEquals(expectedOrder.getOrderName(), actualOrder.get().getOrderName()));

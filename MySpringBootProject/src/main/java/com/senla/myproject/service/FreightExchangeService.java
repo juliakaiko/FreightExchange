@@ -16,20 +16,20 @@ public interface FreightExchangeService {
     //EntityGraph
     CarrierManagerDto findCarrierManagerWithEntityGraphByEmail(String email);
 
-    Page<CarrierManagerDto> findAllManagersNativeWithPagination(int page, int size);
+    Page<CarrierManagerDto> findAllManagersNativeWithPagination(Integer page, Integer size);
 
     FreightForwarderDto findFreightForwarderById(Long id);
     FreightForwarderDto findFreightForwarderByEmailIsLike (String email);
     FreightForwarderDto saveFreightForwarder(FreightForwarderDto userDTO);
     FreightForwarderDto deleteFreightForwarderById(Long id);
     List <FreightForwarder> findAllForwarders();
-    Page<FreightForwarderDto> findAllForwardersNativeWithPagination(int page, int size);
+    Page<FreightForwarderDto> findAllForwardersNativeWithPagination(Integer page, Integer size);
 
     CarrierDto findCarrierById(Long id);
     CarrierDto saveCarrier(CarrierDto carrierDTO);
     CarrierDto deleteCarrierById(Long id);
     List <Carrier> findAllCarriers();
-    Page<CarrierDto> findAllCarriersNativeWithPagination(int page, int size);
+    Page<CarrierDto> findAllCarriersNativeWithPagination(Integer page, Integer size);
 
     CarriageRequestDto findOrderById(Long id);
     CarriageRequestDto findOrderByName(String orderName);
@@ -38,12 +38,12 @@ public interface FreightExchangeService {
     CarriageRequestDto saveOrder(CarriageRequestDto carriageRequestDTO);
     CarriageRequestDto deleteOrderById(Long id);
     List<CarriageRequest> findAllOrders();
-    Page<CarriageRequestDto> findAllOrdersNativeWithPagination(int page, int size);
+    Page<CarriageRequestDto> findAllOrdersNativeWithPagination(Integer page, Integer size);
     List<CarriageRequest> findAllFreeOrders();
 
     TruckParkDto findTruckParkById(Long id);
     TruckParkDto saveTruckPark(TruckParkDto parkDTO);
     TruckParkDto deleteTruckParkById(Long id);
     List <TruckPark> findAllTruckParks();
-    Page<TruckParkDto> findAllTruckParksNativeWithPagination(int page, int size);
+    Page<TruckParkDto> findAllTruckParksNativeWithPagination(Integer page, Integer size);
 }

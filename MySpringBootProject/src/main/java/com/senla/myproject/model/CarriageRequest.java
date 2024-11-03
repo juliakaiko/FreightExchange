@@ -2,8 +2,6 @@ package com.senla.myproject.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import java.io.Serializable;
@@ -25,23 +23,18 @@ public class CarriageRequest implements Serializable {
     private Long id;
 
     @Column(name="order_name")
-    @NotBlank (message = "Order name may not be empty")
     private String orderName;
 
     @Column(name="start_point")
-    @NotBlank(message = "StartPoint may not be empty")
     private String startPoint;
 
     @Column(name="finish_point")
-    @NotBlank(message = "FinishPoint may not be empty")
     private String finishPoint;
 
     @Column(name="cargo")
-    @NotBlank(message = "Cargo may not be empty")
     private String cargo;
 
     @Column(name="freight")
-    @NotNull(message = "Freight may not be null")
     private Long freight;
 
     @Column(name="valid")
@@ -49,7 +42,7 @@ public class CarriageRequest implements Serializable {
     private Boolean valid;
 
     //много заказов м.б. у одного экспедитора => @ManyToOne
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JsonIgnore
     private FreightForwarder forwarder;
 
@@ -57,4 +50,13 @@ public class CarriageRequest implements Serializable {
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JsonIgnore
     private CarrierManager manager;
+
+    @PreRemove
+    private void preRemove() {
+        if (this.manager != null)
+            manager.getOrders().remove(this); //forEach(order -> order.setManager(null));
+        if (this.forwarder != null)
+            forwarder.getOrders().remove(this);
+    }
+
 }

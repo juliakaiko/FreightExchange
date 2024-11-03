@@ -1,11 +1,14 @@
 package com.senla.myproject.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @SuperBuilder
 @Getter
@@ -15,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode
 @ToString
 @MappedSuperclass
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // БД вставляет данные и она автоматически присваивает значение
@@ -23,26 +26,48 @@ public class User {
     private Long id;
 
     @Column(name="email")
-    @Email(regexp="\\w+@\\w+\\.\\w+", message="Please provide a valid email address") //  .+@.+\..+
-    @NotBlank(message = "Email address may not be empty")
     private String email;
 
     @Column(name="password")
-    @NotBlank (message = "Password may not be empty")
-    @Size(min=5, max=255, message = "Password size must be between 5 and 255")
     private String password;
 
     @Column(name="firstname")
-    @NotBlank(message = "Firstname may not be empty")
-    @Size(min=2, max=50, message = "Firstname size must be between 2 and 50")
     private String firstName;
 
     @Column(name="surname")
-    @NotBlank(message = "Surname may not be empty")
-    @Size(min=2, max=50, message = "Surname size must be between 2 and 50")
     private String surName;
 
     @Enumerated(EnumType.STRING) //в базе будет хранится имя этого enum
     @Column(name="role")
     private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

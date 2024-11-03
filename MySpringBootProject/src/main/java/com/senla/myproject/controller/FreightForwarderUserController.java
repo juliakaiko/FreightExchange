@@ -3,35 +3,54 @@ package com.senla.myproject.controller;
 import com.senla.myproject.annotations.UserExceptionHandler;
 import com.senla.myproject.dto.CarriageRequestDto;
 import com.senla.myproject.dto.FreightForwarderDto;
+import com.senla.myproject.mapper.FreightForwarderMapper;
+import com.senla.myproject.model.FreightForwarder;
 import com.senla.myproject.service.FreightExchangeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
-@RestController/* объединяет  @Controller и @ResponseBody => не только помечает класс как Spring MVC Controller,
-//но и автоматически преобразует возвращаемые контроллером данные в формат JSON*/
+@RestController/* объединяет  @Controller и @ResponseBody => автоматически преобразует возвращаемые контроллером данные в формат JSON*/
 @RequiredArgsConstructor
-@RequestMapping("/")
-@Slf4j
+@RequestMapping("/app")
 @Tag(name="Forwarder_UserController") // для swagger-а
 @UserExceptionHandler
 @PreAuthorize("hasAuthority('FORWARDER')")
+@Slf4j
 public class FreightForwarderUserController {
 
     private final FreightExchangeService service;
 
+    public FreightForwarder getAuthenticatedForwarder (){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        FreightForwarderDto forwarderDto = service.findFreightForwarderByEmailIsLike(currentPrincipalName);
+        FreightForwarder forwarder = FreightForwarderMapper.INSTANSE.toEntity(forwarderDto);
+        return forwarder;
+    }
+
     @PutMapping("/forwarders")
-    public ResponseEntity updateFreightForwarder (@RequestBody FreightForwarderDto forwarderDto){
+    public ResponseEntity <?> updateFreightForwarder (@RequestBody @Valid FreightForwarderDto forwarderDto){
         log.info("FROM UserController => Request to update the FreightForwarder: "+forwarderDto);
         FreightForwarderDto forwarderDto2 = service.findFreightForwarderById(forwarderDto.getId());
         if (forwarderDto2 != null)
             forwarderDto.setOrders(forwarderDto2.getOrders());
 
-        FreightForwarderDto savedForwarderDto =service.saveFreightForwarder(forwarderDto);
+        FreightForwarder forwarder = getAuthenticatedForwarder ();
+        FreightForwarderDto savedForwarderDto = null;
+
+        if (forwarderDto.equals(forwarder.getId())){
+            savedForwarderDto =service.saveFreightForwarder(forwarderDto);
+        }else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
         return ObjectUtils.isEmpty(savedForwarderDto)
                 ? ResponseEntity.notFound().build()
@@ -39,30 +58,47 @@ public class FreightForwarderUserController {
     }
 
     @DeleteMapping("/forwarders/{id}")
-    public ResponseEntity  deleteFreightForwarder (@PathVariable("id") Long id) {
+    public ResponseEntity <?> deleteFreightForwarder (@PathVariable("id") Long id) {
         log.info("FROM UserController => Request to delete the FreightForwarder by id: "+id);
-        FreightForwarderDto forwarderDto = service.deleteFreightForwarderById(id);
+        FreightForwarder forwarder = getAuthenticatedForwarder ();
+        FreightForwarderDto forwarderDto = null;
+
+        if (id.equals(forwarder.getId())){
+            forwarderDto = service.deleteFreightForwarderById(id);
+        }else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
         return ObjectUtils.isEmpty(forwarderDto)
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(forwarderDto);
     }
 
     @PostMapping("/orders")
-    public ResponseEntity createCarriageRequest (@RequestBody CarriageRequestDto orderDto){
+    public ResponseEntity <?> createCarriageRequest (@RequestBody @Valid CarriageRequestDto orderDto){
         log.info("FROM RegistrationController => Request to add new Carriage Request: "+orderDto);
+        FreightForwarder forwarder = getAuthenticatedForwarder ();
+        orderDto.setForwarder(forwarder);
         CarriageRequestDto savedOrderDto = service.saveOrder(orderDto);
-        return ResponseEntity.ok (savedOrderDto);
+        CarriageRequestDto fromDbOrderDto = service.findOrderByName(savedOrderDto.getOrderName());
+        return ResponseEntity.ok (fromDbOrderDto);
     }
 
     @PutMapping("/orders")
-    public ResponseEntity updateCarriageRequest (@RequestBody CarriageRequestDto orderDto){
+    public ResponseEntity <?> updateCarriageRequest (@RequestBody @Valid CarriageRequestDto orderDto){
         log.info("FROM UserController => Request to update the CarriageRequest: "+orderDto);
-        CarriageRequestDto orderDto2 = service.findOrderById(orderDto.getId());
+        CarriageRequestDto orderDto2 = service.findOrderByName(orderDto.getOrderName());
         if (orderDto2 != null){
             orderDto.setForwarder(orderDto2.getForwarder());
             orderDto.setManager(orderDto2.getManager());
         }
-        CarriageRequestDto savedOrderDto = service.saveOrder(orderDto);
+        FreightForwarder forwarder = getAuthenticatedForwarder ();
+        CarriageRequestDto savedOrderDto= null;
+        //Только тот логист, что создал заказ, может его обновить
+        if (service.findOrderById(orderDto2.getId()).getForwarder().getId().equals(forwarder.getId())){
+            orderDto.setId(orderDto2.getId());
+            savedOrderDto  = service.saveOrder(orderDto);
+        }else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
         return ObjectUtils.isEmpty(savedOrderDto)
                 ? ResponseEntity.notFound().build()
@@ -70,9 +106,16 @@ public class FreightForwarderUserController {
     }
 
     @DeleteMapping("/orders/{id}")
-    public ResponseEntity  deleteCarriageRequest (@PathVariable("id") Long id) {
+    public ResponseEntity <?> deleteCarriageRequest (@PathVariable("id") Long id) {
         log.info("FROM UserController => Request to delete the CarriageRequest by id: "+id);
-        CarriageRequestDto orderDto = service.deleteOrderById(id);
+        FreightForwarder forwarder = getAuthenticatedForwarder ();
+        CarriageRequestDto orderDto= null;
+        //Только тот логист, что создал заказ, может его удалить
+        if (service.findOrderById(id).getForwarder().getId().equals(forwarder.getId())){
+            orderDto = service.deleteOrderById(id);
+        }else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
         return ObjectUtils.isEmpty(orderDto)
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(orderDto);

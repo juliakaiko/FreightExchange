@@ -1,6 +1,8 @@
 package com.senla.myproject.service;
 
 import com.senla.myproject.dto.*;
+import com.senla.myproject.exceptions.NotFoundException;
+import com.senla.myproject.exceptions.OrderNotValidException;
 import com.senla.myproject.mapper.*;
 import com.senla.myproject.model.*;
 import com.senla.myproject.repository.*;
@@ -12,6 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.*;
 
@@ -37,20 +42,64 @@ public class FreightExchangeServiceImplTest {
 
     //CarrierManager
     @Test
+    public void saveCarrierManager_whenCorrect_thenReturnCarrierManagerDto(){
+        CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
+        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDto(manager);
+        CarrierManagerDto result = service.saveCarrierManager(managerDto);
+
+        verify(managerRepository, times(1)).save(manager);
+
+        log.info("FROM SERVICE_TEST: save the CarrierManager => manager: "+result);
+        assertEquals(managerDto, result);
+    }
+
+    @Test
     public void findCarrierManagerById_thenReturnCarrierManagerDto() {
         CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
         CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDto(manager);
         managerRepository.save(manager);
-        //если вызывется метод getOne у репозитория, то возвращается manager
+        //если вызывется метод findById у репозитория, то возвращается manager
         // Стаббинг: определение поведения
         when(managerRepository.findById(manager.getId())).thenReturn(Optional.of(manager));
 
         CarrierManagerDto result = service.findCarrierManagerById(manager.getId());
-        //Верификация: был ли вызван метод getOne 1 раз
+        //Верификация: был ли вызван метод findById 1 раз
         verify(managerRepository, times(1)).findById(manager.getId());
         // Проверка: метод findCarrierManagerById сервиса возвращает сгенерированого manager
         log.info("FROM SERVICE_TEST: find the CarrierManager by id => manager: "+result);
         assertEquals(managerDto, result);
+    }
+
+    @Test
+    public void findCarrierManagerByEmail_whenCorrect_thenReturnCarrierManagerDto() {
+        CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
+        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDto(manager);
+        managerRepository.save(manager);
+        //если вызывется метод findCarrierManagerByEmailIsLike у репозитория, то возвращается manager
+        // Стаббинг: определение поведения
+        when(managerRepository.findCarrierManagerByEmailIsLike(manager.getEmail())).thenReturn(Optional.of(manager));
+
+        CarrierManagerDto result = service.findCarrierManagerByEmailIsLike(manager.getEmail());
+        //Верификация: был ли вызван метод findCarrierManagerByEmailIsLike 1 раз
+        verify(managerRepository, times(1)).findCarrierManagerByEmailIsLike(manager.getEmail());
+        // Проверка: метод findCarrierManagerById сервиса возвращает сгенерированого manager
+        log.info("FROM SERVICE_TEST: find the CarrierManager by email => manager: "+result);
+        assertEquals(managerDto, result);
+    }
+
+    @Test
+    public void findCarrierManagerByEmail_whenInCorrect_thenReturnNotFoundException() {
+        CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
+        manager.setEmail("incorrect@mail.ru");
+        managerRepository.save(manager);
+        try {
+            when(managerRepository.findCarrierManagerByEmailIsLike(manager.getEmail())).thenReturn(Optional.of(manager));
+            service.findCarrierManagerByEmailIsLike(manager.getEmail());
+            verify(managerRepository, times(1)).findCarrierManagerByEmailIsLike(manager.getEmail());
+        } catch (NotFoundException e){
+            System.out.println("NotFoundException: "+e.getMessage());
+            assertEquals("CarrierManager wasn't found by email " + manager.getEmail(), e.getMessage());
+        }
     }
 
     @Test
@@ -75,17 +124,31 @@ public class FreightExchangeServiceImplTest {
         assertEquals(managerList, resultList);
     }
 
-    @Test
-    public void saveCarrierManager_whenCorrect_thenReturnCarrierManagerDto(){
-        CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
-        CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDto(manager);
-        CarrierManagerDto result = service.saveCarrierManager(managerDto);
+  /*  @Test
+    public  void findAllManagersNativeWithPagination_whenCorrect_ReturnCarrierManagerList() {
+        log.info("FROM SERVISE: findAllManagersNativeWithPagination()");
 
-        verify(managerRepository, times(1)).save(manager);
+        CarrierManager manager1 = CarrierManagerGenerator.generateCarrierManager();
+        CarrierManager manager2 = CarrierManagerGenerator.generateCarrierManager();
+        manager2.setId(2l); manager2.setEmail("test2@test.by");
+        CarrierManager manager3 = CarrierManagerGenerator.generateCarrierManager();
+        manager3.setId(3l); manager3.setEmail("test3@test.by");
+        List <CarrierManager> managerList = new ArrayList<>();
+        managerList.add(manager1);
+        managerList.add(manager2);
+        managerList.add(manager3);
 
-        log.info("FROM SERVICE_TEST: save the CarrierManager => manager: "+result);
-        assertEquals(managerDto, result);
-    }
+        managerRepository.save(manager1); managerRepository.save(manager2); managerRepository.save(manager3);
+        //managerList.stream().map(manager -> CarrierManagerMapper.INSTANSE.toDto(manager));
+
+        var pageable  = PageRequest.of(0,1, Sort.by("id"));
+        Page <CarrierManagerDto> resultList = service.findAllManagersNativeWithPagination(0,1);
+        when(this.orderRepository.findAllOrdersNative(pageable)).thenReturn(resultList);
+        //when(this.orderRepository.findAllOrdersNative(pageable).getSize()).thenReturn(1);
+
+        verify(managerRepository, times(1)).findAllManagersNative(pageable);
+    }*/
+
 
     @Test
     public void deleteCarrierManagerById_whenCorrect_thenReturnCarrierManagerDto() {
@@ -180,6 +243,39 @@ public class FreightExchangeServiceImplTest {
     }
 
     @Test
+    public void findFreightForwarderByEmail_whenCorrect_thenReturnCarrierManagerDto() {
+        FreightForwarder forwarder =FreightForwarderGenerator.generateFreightForwarder();
+        FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDto(forwarder);
+        forwarderRepository.save(forwarder);
+        //если вызывется метод findCarrierManagerByEmailIsLike у репозитория, то возвращается manager
+        // Стаббинг: определение поведения
+        when(forwarderRepository.findFreightForwarderByEmailIsLike(forwarder.getEmail())).thenReturn(Optional.of(forwarder));
+
+        FreightForwarderDto result = service.findFreightForwarderByEmailIsLike(forwarder.getEmail());
+        //Верификация: был ли вызван метод findCarrierManagerByEmailIsLike 1 раз
+        verify(forwarderRepository, times(1)).findFreightForwarderByEmailIsLike(forwarder.getEmail());
+        // Проверка: метод findCarrierManagerById сервиса возвращает сгенерированого manager
+        log.info("FROM SERVICE_TEST: find the FreightForwarder by email => forwarder: "+result);
+        assertEquals(forwarderDto, result);
+    }
+
+    @Test
+    public void findFreightForwarderByEmail_whenInCorrect_thenReturnNotFoundException() {
+        FreightForwarder forwarder =FreightForwarderGenerator.generateFreightForwarder();
+        forwarder.setEmail("incorrect@mail.ru");
+        forwarderRepository.save(forwarder);
+        try {
+            when(forwarderRepository.findFreightForwarderByEmailIsLike(forwarder.getEmail())).thenReturn(Optional.of(forwarder));
+            service.findFreightForwarderByEmailIsLike(forwarder.getEmail());
+            verify(forwarderRepository, times(1)).findFreightForwarderByEmailIsLike(forwarder.getEmail());
+        } catch (NotFoundException e){
+            System.out.println("NotFoundException: "+e.getMessage());
+            assertEquals("FreightForwarder wasn't found by email " + forwarder.getEmail(), e.getMessage());
+        }
+        log.info("FROM SERVICE_TEST: Fail to find the FreightForwarder by email: "+forwarder.getEmail());
+    }
+
+    @Test
     public void saveFreightForwarder_whenCorrect_thenReturnFreightForwarderDto() {
         FreightForwarder forwarder = FreightForwarderGenerator.generateFreightForwarder();
         FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDto(forwarder);
@@ -240,6 +336,118 @@ public class FreightExchangeServiceImplTest {
 
         log.info("FROM SERVICE_TEST: find the Order by id => order: "+result);
         assertEquals(orderDto, result);
+    }
+
+    @Test
+    public void findOrderByName_whenCorrect_thenReturnOrderDto(){
+        CarriageRequest order = CarriageRequestGenerator.generateOrder();
+        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDto(order);
+        orderRepository.save(order);
+        //если вызывется метод findCarrierManagerByEmailIsLike у репозитория, то возвращается manager
+        // Стаббинг: определение поведения
+        when(orderRepository.findByOrderNameIsLike(order.getOrderName())).thenReturn(Optional.of(order));
+
+        CarriageRequestDto result = service.findOrderByName(order.getOrderName());
+        //Верификация: был ли вызван метод findCarrierManagerByEmailIsLike 1 раз
+        verify(orderRepository, times(1)).findByOrderNameIsLike(order.getOrderName());
+        // Проверка: метод findCarrierManagerById сервиса возвращает сгенерированого manager
+        log.info("FROM SERVICE_TEST: find the Order by name => order: "+result);
+        assertEquals(orderDto, result);
+    }
+
+    @Test
+    public void findOrderByName_whenInCorrect_thenReturnOrderDto(){
+        CarriageRequest order = CarriageRequestGenerator.generateOrder();
+        order.setOrderName("incorrectName");
+        orderRepository.save(order);
+        try {
+            when(orderRepository.findByOrderNameIsLike(order.getOrderName())).thenReturn(Optional.of(order));
+            service.findOrderByName(order.getOrderName());
+            verify(orderRepository, times(1)).findByOrderNameIsLike(order.getOrderName());
+        } catch (NotFoundException e){
+            System.out.println("NotFoundException: "+e.getMessage());
+            assertEquals("Order wasn't found by name " + order.getOrderName(), e.getMessage());
+        }
+        log.info("FROM SERVICE_TEST: Fail to find the Order by name: "+order.getOrderName());
+    }
+
+    @Test
+    public void takeValidOrder_whenCorrect_thenReturnOrderDto() {
+        CarriageRequest order = CarriageRequestGenerator.generateOrder();
+        CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
+
+        when(orderRepository.findByOrderNameIsLike(order.getOrderName())).thenReturn(Optional.of(order));
+        CarriageRequestDto result = service.takeValidOrder(manager, order.getOrderName());
+        verify(orderRepository, times(1)).findByOrderNameIsLike(order.getOrderName());
+
+        if (order.getValid() == true) {
+            order.setValid(false);
+            order.setManager(manager);
+            manager.getOrders().add(order);
+        }
+        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDto(order);
+
+        log.info("FROM SERVICE_TEST: takeValidOrder() => order: "+order);
+        assertFalse(order.getValid());
+        assertEquals(orderDto, result);
+    }
+
+    @Test
+    public void takeValidOrder_whenInCorrect_thenThrowOrderNotValidException() {
+        CarriageRequest order = CarriageRequestGenerator.generateOrder();
+        order.setValid(false);
+        log.info("FROM SERVICE_TEST: takeValidOrder_whenInCorrect_thenThrowOrderNotValidException() => order: "+order);
+        CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
+        try {
+            when(orderRepository.findByOrderNameIsLike(order.getOrderName())).thenReturn(Optional.of(order));
+            CarriageRequestDto result = service.takeValidOrder(manager, order.getOrderName());
+            verify(orderRepository, times(1)).findByOrderNameIsLike(order.getOrderName());
+        } catch (OrderNotValidException e){
+            System.out.println("OrderNotValidException: "+e.getMessage());
+            assertEquals("This order is not valid", e.getMessage());
+        }
+    }
+
+    @Test
+    public void cancelOrderwhenCorrect_thenReturnOrderDto(){
+        CarriageRequest order = CarriageRequestGenerator.generateOrder();
+        CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
+        manager.getOrders().add(order);
+
+        when(orderRepository.findByOrderNameIsLike(order.getOrderName())).thenReturn(Optional.of(order));
+        CarriageRequestDto result = service.cancelOrder(manager, order.getOrderName());
+        verify(orderRepository, times(1)).findByOrderNameIsLike(order.getOrderName());
+
+        Set<CarriageRequest> managerOrders = manager.getOrders();
+        boolean found = false;
+        for (CarriageRequest managerOrder: managerOrders){
+            if(managerOrder.equals(order)){
+                order.setValid(true);
+                order.setManager(null);
+                manager.getOrders().remove(order);
+                found = true;
+            }
+        }
+
+        CarriageRequestDto orderDto = CarriageRequestMapper.INSTANSE.toDto(order);
+
+        log.info("FROM SERVICE_TEST: cancelOrderwhenCorrect_thenReturnOrderDto() => order: "+order);
+        assertTrue(order.getValid());
+        assertEquals(orderDto, result);
+    }
+
+    @Test
+    public void cancelOrderwhenInCorrect_thenReturnNotFoundException(){
+        CarriageRequest order = CarriageRequestGenerator.generateOrder();
+        CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
+        try {
+            when(orderRepository.findByOrderNameIsLike(order.getOrderName())).thenReturn(Optional.of(order));
+            CarriageRequestDto result = service.cancelOrder(manager, order.getOrderName());
+            verify(orderRepository, times(1)).findByOrderNameIsLike(order.getOrderName());
+        } catch (NotFoundException e){
+            System.out.println("NotFoundException: "+e.getMessage());
+            assertEquals("This manager doesn't have such order", e.getMessage());
+        }
     }
 
     @Test

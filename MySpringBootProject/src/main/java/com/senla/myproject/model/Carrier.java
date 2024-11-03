@@ -3,9 +3,7 @@ package com.senla.myproject.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,11 +25,9 @@ public class Carrier implements Serializable { //
     private Long id;
 
     @Column (name="name")
-    @NotBlank (message = "Carrier name may not be empty")
     private String name;
 
     @Column (name="address")
-    @NotBlank(message = "Carrier address may not be empty")
     private String address;
 
     // у перевозчика м.б. много экспедиторов, так и экспедитор может работать на несколько фирм

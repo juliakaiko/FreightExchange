@@ -1,19 +1,16 @@
 package com.senla.myproject.exceptions;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ErrorItem {
+
+    private int status;
     private String message;
+    private String timestamp;
 
-    public ErrorItem() {
-    }
-
-    public ErrorItem(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }
