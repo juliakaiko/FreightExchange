@@ -31,15 +31,12 @@ public class GeneralUserController {
 
     private final FreightExchangeService service;
 
-    private static final String LOGIN = "/login";
-    private static final String MANAGER_PROFILE = "/orders";
-
     @GetMapping("/")
     public String sayHello(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         User user = null;
-        CarrierManagerDto manager = null;
+        CarrierManagerDto manager;
         try {
             manager = service.findCarrierManagerByEmailIsLike(currentPrincipalName);
             if (manager.getEmail().equals(currentPrincipalName)){
@@ -49,7 +46,7 @@ public class GeneralUserController {
             log.info(e.getMessage());
         }
 
-        FreightForwarderDto forwarder = null;
+        FreightForwarderDto forwarder;
         try {
             forwarder = service.findFreightForwarderByEmailIsLike(currentPrincipalName);
             if (forwarder.getEmail().equals(currentPrincipalName)){
@@ -64,8 +61,8 @@ public class GeneralUserController {
 
     //CarrierManager
     @GetMapping("/managers/{id}")
-    public ResponseEntity <?> getCarrierManager (@PathVariable("id") Long id) {
-        log.info("FROM UserController => Request to find the CarrierManager by id: "+id);
+    public ResponseEntity <?> getCarrierManagerById (@PathVariable("id") Long id) {
+        log.info("Request to find the CarrierManager by id: {}",id);
         CarrierManagerDto managerDto = service.findCarrierManagerById(id);
         return ObjectUtils.isEmpty(managerDto)
                     ? ResponseEntity.notFound().build() //ResponseEntity.ok(String.format("CarrierManager with id = %d not found", id))
@@ -76,7 +73,7 @@ public class GeneralUserController {
     //http://localhost:8080/app/managers/search?email=kaiko%40gmail.com
     //@RequestParam извлекает значения из строки запроса,строка запроса начинается ?
     public ResponseEntity <?> getCarrierManagerWithEntityGraphByEmail (@RequestParam String email) {
-        log.info("FROM UserController => Request to find the CarrierManager by email: "+email);
+        log.info("Request to find the CarrierManager by email: {}",email);
         CarrierManagerDto managerDto = service.findCarrierManagerWithEntityGraphByEmail(email);
         return ObjectUtils.isEmpty(managerDto)
                 ? ResponseEntity.notFound().build()
@@ -85,7 +82,6 @@ public class GeneralUserController {
 
     @GetMapping("/managers")
     public List<CarrierManager> getAllCarrierManagers(){
-        log.info("FROM UserController => Request to find all CarrierManagers");
         return service.findAllCarrierManagers();
     }
 
@@ -93,14 +89,13 @@ public class GeneralUserController {
     @GetMapping("/pageable_managers")
     //http://localhost:8080/app/pageable_managers?page=0&size=1
     public Page<CarrierManagerDto> getAllNativeManagers(@RequestParam Integer page, @RequestParam Integer size){
-        log.info("FROM UserController => Request to find all CarrierManagers with pagination");
         return service.findAllManagersNativeWithPagination(page,size);
     }
 
     //Order
     @GetMapping("/orders/{id}")
-    public ResponseEntity <?> getCarriageRequest (@PathVariable("id") Long id) {
-        log.info("FROM UserController => Request to find the CarriageRequest by id: "+id);
+    public ResponseEntity <?> getCarriageRequestById (@PathVariable("id") Long id) {
+        log.info("Request to find the CarriageRequest by id: {}",id);
         CarriageRequestDto orderDto = service.findOrderById(id);
         return ObjectUtils.isEmpty(orderDto)
                 ? ResponseEntity.notFound().build()
@@ -111,7 +106,7 @@ public class GeneralUserController {
     //http://localhost:8080/app/orders/search/N-12345678
     //@PathVariable извлекает значения из пути URI
     public ResponseEntity <?> getCarriageRequestByNameIsLike (@PathVariable("name") String orderName) {
-        log.info("FROM UserController => Request to find the CarriageRequest by name: "+orderName);
+        log.info("Request to find the CarriageRequest by name: {}",orderName);
         CarriageRequestDto orderDto = service.findOrderByName(orderName);
         return ObjectUtils.isEmpty(orderDto)
                 ? ResponseEntity.notFound().build()
@@ -120,7 +115,6 @@ public class GeneralUserController {
 
     @GetMapping("/orders")
     public List<CarriageRequest> getAllCarriageRequests(){
-        log.info("FROM UserController => Request to find all CarriageRequests");
         return service.findAllOrders();
     }
 
@@ -128,14 +122,13 @@ public class GeneralUserController {
     @GetMapping("/pageable_orders")
     //http://localhost:8080/app/pageable_orders?page=0&size=5
     public Page<CarriageRequestDto> getAllNativeCarriageRequests(@RequestParam Integer  page, @RequestParam Integer  size){
-        log.info("FROM UserController => Request to find all CarriageRequests with pagination");
         return service.findAllOrdersNativeWithPagination(page,size);
     }
 
     //Carrier
     @GetMapping("/carriers/{id}")
-    public ResponseEntity <?> getCarriers (@PathVariable("id") Long id) {
-        log.info("FROM UserController => Request to find the Carrier by id: "+id);
+    public ResponseEntity <?> getCarrierById (@PathVariable("id") Long id) {
+        log.info("Request to find the Carrier by id: {}",id);
         CarrierDto carrierDto = service.findCarrierById(id);
         return ObjectUtils.isEmpty(carrierDto)
                 ? ResponseEntity.notFound().build()
@@ -144,7 +137,6 @@ public class GeneralUserController {
 
     @GetMapping("/carriers")
     public List<Carrier> getAllCarriers(){
-        log.info("FROM UserController => Request to find all Carriers");
         return service.findAllCarriers();
     }
 
@@ -152,14 +144,13 @@ public class GeneralUserController {
     @GetMapping("/pageable_carriers")
     //http://localhost:8080/app/pageable_carriers?page=0&size=1
     public Page<CarrierDto> getAllNativeCarriers(@RequestParam Integer page, @RequestParam Integer size){
-        log.info("FROM UserController => Request to find all Carriers with pagination");
         return service.findAllCarriersNativeWithPagination(page,size);
     }
 
     // FreightForwarder
     @GetMapping("/forwarders/{id}")
-    public ResponseEntity <?> getFreightForwarder (@PathVariable("id") Long id) {
-        log.info("FROM UserController => Request to find the FreightForwarder by id: "+id);
+    public ResponseEntity <?> getFreightForwarderById (@PathVariable("id") Long id) {
+        log.info("Request to find the FreightForwarder by id: {}",id);
         FreightForwarderDto forwarderDto = service.findFreightForwarderById(id);
         return ObjectUtils.isEmpty(forwarderDto)
                 ? ResponseEntity.notFound().build()
@@ -167,8 +158,7 @@ public class GeneralUserController {
     }
 
     @GetMapping("/forwarders")
-    public List<FreightForwarder> getAlFreightForwarders(){
-        log.info("FROM UserController => Request to find all FreightForwarders");
+    public List<FreightForwarder> getAllFreightForwarders(){
         return service.findAllForwarders();
     }
 
@@ -176,14 +166,13 @@ public class GeneralUserController {
     @GetMapping("/pageable_forwarders")
     //http://localhost:8080/app/pageable_forwarders?page=0&size=1
     public Page<FreightForwarderDto> getAllNativeFreightForwarders(@RequestParam Integer page, @RequestParam Integer size){
-        log.info("FROM UserController => Request to find all FreightForwarders with pagination");
         return service.findAllForwardersNativeWithPagination(page,size);
     }
 
     // TruckPark
     @GetMapping("/truck_parks/{id}")
-    public ResponseEntity <?> getTruckPark (@PathVariable("id") Long id) {
-        log.info("FROM UserController => Request to find the TruckPark by id: "+id);
+    public ResponseEntity <?> getTruckParkById (@PathVariable("id") Long id) {
+        log.info("Request to find the TruckPark by id: {}",id);
         TruckParkDto parkDto = service.findTruckParkById(id);
         return ObjectUtils.isEmpty(parkDto)
                 ? ResponseEntity.notFound().build()
@@ -192,7 +181,6 @@ public class GeneralUserController {
 
     @GetMapping("/truck_parks")
     public List<TruckPark> getAllTruckParks(){
-        log.info("FROM UserController => Request to find all TruckParks");
         return service.findAllTruckParks();
     }
 
@@ -200,7 +188,6 @@ public class GeneralUserController {
     @GetMapping("/pageable_truck_parks")
     //http://localhost:8080/app/pageable_truck_parks?page=0&size=1
     public Page<TruckParkDto> getAllNativeTruckParks(@RequestParam Integer page, @RequestParam Integer size){
-        log.info("FROM UserController => Request to find all TruckParks with pagination");
         return service.findAllTruckParksNativeWithPagination(page,size);
     }
 }

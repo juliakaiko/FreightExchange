@@ -28,10 +28,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = FreightForwarderUserController.class)
+@WebMvcTest(controllers = FreightForwarderController.class)
 @Slf4j // для логирования
 @WithMockUser
-public class FreightForwarderUserControllerTest {
+public class FreightForwarderControllerTest {
 
     private final static Long ENTITY_ID = 1l;
     @MockBean // объект добавляет в Contex в отличие от @Mock
@@ -127,4 +127,20 @@ public class FreightForwarderUserControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(response)))
                 .andDo(print());
     }
+
+    /*@Test
+    public void testAddFreightForwarder() throws Exception {
+        FreightForwarder request = FreightForwarderGenerator.generateFreightForwarder();
+        FreightForwarderDto response = FreightForwarderMapper.INSTANSE.toDto(request);
+
+        log.info("FROM RegistrationControllerTest => Request to ADD the Forwarder: "+response);
+        when(service.saveFreightForwarder(response)).thenReturn(response);
+
+        this.mockMvc.perform(post("/forwarders").with(csrf())
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)));
+    }*/
 }

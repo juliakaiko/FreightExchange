@@ -1,5 +1,4 @@
 package com.senla.myproject.controller;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.senla.myproject.dto.CarriageRequestDto;
 import com.senla.myproject.dto.CarrierDto;
@@ -34,20 +33,20 @@ import java.util.Set;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = CarrierManagerUserController.class)
+@WebMvcTest (controllers = CarrierManagerController.class)
 @Slf4j // для логирования
-@WithMockUser (username = "test@test.by", password = "test", roles = {"MANAGER"})// тестрирование с аутентифицированным пользователем
-public class CarrierManagerUserControllerTest {
+@WithMockUser // тестрирование с аутентифицированным пользователем
+public class CarrierManagerControllerTest {
 
     private final static Long ENTITY_ID = 1l;
     private final static String ORDER_NAME = "TestOrderName";
-    @MockBean // объект добавляет в Contex в отличие от @Mock
+
+    @MockBean // объект добавляет в Spring ApplicationContext в отличие от @Mock => заменяет бин на мок в контексте
     private FreightExchangeService service;
 
     @Autowired
@@ -55,7 +54,6 @@ public class CarrierManagerUserControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
     @Test
     public void takeCarriageRequestByNameIsLike_whenCorrect_thenOk() throws Exception {
         log.info("FROM CarrierManagerUserControllerTest => TEST to take the Order with name: "+ORDER_NAME);
@@ -218,4 +216,53 @@ public class CarrierManagerUserControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(response)))
                 .andDo(print());
     }
+
+    @Test
+    public void testAddCarrierManager() throws Exception {
+        CarrierManager request = CarrierManagerGenerator.generateCarrierManager();
+        CarrierManagerDto response = CarrierManagerMapper.INSTANSE.toDto(request);
+
+        log.info("FROM RegistrationControllerTest => Request to ADD the CarrierManager: "+response);
+        when(service.saveCarrierManager(response)).thenReturn(response);
+
+        this.mockMvc.perform(post("/managers").with(csrf())
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)));
+    }
+
+    @Test
+    public void testAddCarrier() throws Exception {
+        Carrier request = CarrierGenerator.generateCarrier();
+        CarrierDto response = CarrierMapper.INSTANSE.toDto(request);
+
+        log.info("FROM RegistrationControllerTest => Request to ADD the Carrier: "+response);
+        when(service.saveCarrier(response)).thenReturn(response);
+
+        this.mockMvc.perform(post("/carriers").with(csrf())
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)));
+    }
+
+    @Test
+    public void testAddTruckPark() throws Exception {
+        TruckPark request = TruckParkGenerator.generateTruckPark();
+        TruckParkDto response = TruckParkMapper.INSTANSE.toDto(request);
+
+        log.info("FROM RegistrationControllerTest => Request to ADD the TruckPark: "+response);
+        when(service.saveTruckPark(response)).thenReturn(response);
+
+        this.mockMvc.perform(post("/truck_parks").with(csrf())
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(response)));
+    }
 }
+

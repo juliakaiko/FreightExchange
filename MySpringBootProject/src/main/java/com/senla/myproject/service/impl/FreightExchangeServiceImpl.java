@@ -60,7 +60,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
         параметра. Optional.ofNullable вернёт Optional, не содержащий значение, если ему передать null.*/
         Optional<CarrierManager> manager = Optional.ofNullable(managerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("CarrierManager wasn't found with id " + id)));
-        log.info("FROM SERVISE: findCarrierManagerById() => manager: "+manager);
+        log.info("findCarrierManagerById(): {}",manager);
         return CarrierManagerMapper.INSTANSE.toDto(manager.get());
     }
 
@@ -69,7 +69,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public CarrierManagerDto findCarrierManagerWithEntityGraphByEmail(String email){
         Optional<CarrierManager> manager = Optional.ofNullable(managerRepository.findCarrierManagerWithEntityGraphByEmail(email)
                 .orElseThrow(() -> new NotFoundException("CarrierManager wasn't found by email " + email)));
-        log.info("FROM SERVISE: findCarrierManagerWithEntityGraphByEmail() => manager: "+manager);
+        log.info("findCarrierManagerWithEntityGraphByEmail(): {}",manager);
         return CarrierManagerMapper.INSTANSE.toDto(manager.get());
     }
 
@@ -78,21 +78,19 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public CarrierManagerDto findCarrierManagerByEmailIsLike(String email){
         Optional<CarrierManager> manager = Optional.ofNullable(managerRepository.findCarrierManagerByEmailIsLike(email)
                 .orElseThrow(() -> new NotFoundException("CarrierManager wasn't found by email " + email)));
-        log.info("FROM SERVISE: findCarrierManagerByEmailIsLike() => manager: "+manager);
+        log.info("findCarrierManagerByEmailIsLike(): {}",manager);
         return CarrierManagerMapper.INSTANSE.toDto(manager.get());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CarrierManager> findAllCarrierManagers() {
-        log.info("FROM SERVISE: findAllCarrierManagers()");
         return managerRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<CarrierManagerDto> findAllManagersNativeWithPagination(Integer page, Integer size) {
-        log.info("FROM SERVISE: findAllManagersNativeWithPagination()");
         var pageable  = PageRequest.of(page,size, Sort.by("id"));
         Page<CarrierManager> managerList = managerRepository.findAllManagersNative(pageable);
         Page<CarrierManagerDto> managerDtos = managerList.map(CarrierManagerMapper.INSTANSE::toDto);
@@ -103,7 +101,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Transactional
     public CarrierManagerDto saveCarrierManager(CarrierManagerDto managerDto){
         CarrierManager manager = CarrierManagerMapper.INSTANSE.toEntity(managerDto);//entityMapper.managerDtoToEntity(managerDto);
-        log.info("FROM SERVISE: saveCarrierManager() => manager: "+manager);
+        log.info("saveCarrierManager(): {}",manager);
         managerRepository.save(manager);
         return managerDto;
     }
@@ -113,7 +111,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public CarrierManagerDto deleteCarrierManagerById(Long id) {
         Optional<CarrierManager> manager = managerRepository.findById(id);
         managerRepository.deleteById(id);
-        log.info("FROM SERVISE: deleteCarrierManagerById() => manager: "+manager);
+        log.info("deleteCarrierManagerById(): {}",manager);
         return CarrierManagerMapper.INSTANSE.toDto(manager.get());
     }
 
@@ -122,7 +120,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Transactional(readOnly = true)
     public CarrierDto findCarrierById(Long id) {
         Optional<Carrier> carrier = carrierRepository.findById(id);
-        log.info("FROM SERVISE: findCarrierById() => carrier: "+carrier);
+        log.info("findCarrierById(): {}",carrier);
         return CarrierMapper.INSTANSE.toDto(carrier.get());
     }
 
@@ -130,7 +128,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Transactional
     public CarrierDto saveCarrier(CarrierDto carrierDTO){
         Carrier carrier = CarrierMapper.INSTANSE.toEntity(carrierDTO);
-        log.info("FROM SERVISE: saveCarrier() => carrier: "+carrier);
+        log.info("saveCarrier(): {}",carrier);
         carrierRepository.save(carrier);
         return carrierDTO;
     }
@@ -140,7 +138,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public CarrierDto deleteCarrierById(Long id) {
         Optional<Carrier> carrier = Optional.ofNullable(carrierRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("CarrierManager wasn't found by id " + id)));
-        log.info("FROM SERVISE: deleteCarrierById() => carrier: "+carrier);
+        log.info("deleteCarrierById(): {}",carrier);
         carrierRepository.deleteById(id);
         return CarrierMapper.INSTANSE.toDto(carrier.get());
     }
@@ -148,14 +146,12 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Override
     @Transactional(readOnly = true)
     public List <Carrier> findAllCarriers() {
-        log.info("FROM SERVISE: findAllCarriers()");
         return carrierRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<CarrierDto> findAllCarriersNativeWithPagination(Integer page, Integer size) {
-        log.info("FROM SERVISE: findAllCarriersNativeWithPagination()");
         var pageable  = PageRequest.of(page,size, Sort.by("id"));
         Page<Carrier> carrierList = carrierRepository.findAllCarriersNative(pageable);
         Page<CarrierDto> carrierDtos = carrierList.map(CarrierMapper.INSTANSE::toDto);
@@ -168,7 +164,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public FreightForwarderDto findFreightForwarderById(Long id) {
         Optional<FreightForwarder> forwarder = Optional.ofNullable(forwarderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("FreightForwarder wasn't found by id " + id)));
-        log.info("FROM SERVISE: findFreightForwarderById() => forwarder: "+forwarder);
+        log.info("findFreightForwarderById(): {}",forwarder);
         return FreightForwarderMapper.INSTANSE.toDto(forwarder.get());
     }
 
@@ -177,7 +173,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public FreightForwarderDto findFreightForwarderByEmailIsLike (String email){
         Optional<FreightForwarder> forwarder = Optional.ofNullable(forwarderRepository.findFreightForwarderByEmailIsLike(email)
                 .orElseThrow(() -> new NotFoundException("FreightForwarder wasn't found with email " + email)));
-        log.info("FROM SERVISE: findFreightForwarderByEmailIsLike() => forwarder: "+forwarder);
+        log.info("findFreightForwarderByEmailIsLike(): {}",forwarder);
         return FreightForwarderMapper.INSTANSE.toDto(forwarder.get());
     }
 
@@ -185,7 +181,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Transactional
     public FreightForwarderDto saveFreightForwarder(FreightForwarderDto forwarderDto){
         FreightForwarder forwarder = FreightForwarderMapper.INSTANSE.toEntity(forwarderDto);
-        log.info("FROM SERVISE: saveFreightForwarder() => forwarder: "+forwarder);
+        log.info("saveFreightForwarder(): {}",forwarder);
         forwarderRepository.save(forwarder);
         return forwarderDto;
     }
@@ -195,7 +191,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public FreightForwarderDto deleteFreightForwarderById(Long id) {
         Optional<FreightForwarder> forwarder = Optional.ofNullable(forwarderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("FreightForwarder wasn't found by id " + id)));
-        log.info("FROM SERVISE: deleteFreightForwarderById() => forwarder: "+forwarder);
+        log.info("deleteFreightForwarderById(): {}",forwarder);
         forwarderRepository.deleteById(id);
         return FreightForwarderMapper.INSTANSE.toDto(forwarder.get());
     }
@@ -203,14 +199,12 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Override
     @Transactional(readOnly = true)
     public List <FreightForwarder> findAllForwarders() {
-        log.info("FROM SERVISE: findAllForwarders()");
         return forwarderRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<FreightForwarderDto> findAllForwardersNativeWithPagination(Integer page, Integer size) {
-        log.info("FROM SERVISE: findAllForwardersNativeWithPagination()");
         var pageable  = PageRequest.of(page,size, Sort.by("id"));
         Page<FreightForwarder> forwarderList = forwarderRepository.findAllFreightForwardersNative(pageable);
         Page<FreightForwarderDto> forwarderDtos = forwarderList.map(FreightForwarderMapper.INSTANSE::toDto);
@@ -223,7 +217,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public CarriageRequestDto findOrderById(Long id) {
         Optional<CarriageRequest> order = Optional.ofNullable(orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Order wasn't found by id " + id)));
-        log.info("FROM SERVISE: findOrderById() => order: "+order);
+        log.info("findOrderById(): {}",order);
         return CarriageRequestMapper.INSTANSE.toDto(order.get());
     }
 
@@ -232,7 +226,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public CarriageRequestDto findOrderByName(String orderName) {
         Optional<CarriageRequest> order = Optional.ofNullable(orderRepository.findByOrderNameIsLike(orderName).
                 orElseThrow(() -> new NotFoundException("Order wasn't found by name " + orderName)));;
-        log.info("FROM SERVISE: findOrderByName() => order: "+order);
+        log.info("findOrderByName(): {}",order);
         return CarriageRequestMapper.INSTANSE.toDto(order.get());
     }
 
@@ -240,7 +234,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Transactional
     public CarriageRequestDto takeValidOrder(CarrierManager manager, String orderName) {
         Optional<CarriageRequest> order = orderRepository.findByOrderNameIsLike(orderName);
-        log.info("FROM SERVISE: takeValidOrder() => order: "+order);
+        log.info("takeValidOrder(): {}",order);
         if (order.get().getValid() == true) {
             order.get().setValid(false);
             order.get().setManager(manager);
@@ -258,7 +252,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Transactional
     public CarriageRequestDto cancelOrder(CarrierManager manager, String orderName){
         Optional<CarriageRequest> orderFromDb = orderRepository.findByOrderNameIsLike(orderName);
-        log.info("FROM SERVISE: cancelOrder() => order: "+orderFromDb);
+        log.info("cancelOrder(): {}",orderFromDb);
         Set<CarriageRequest> managerOrders = manager.getOrders();
         boolean found = false;
         for (CarriageRequest order: managerOrders){
@@ -282,7 +276,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Transactional
     public CarriageRequestDto saveOrder(CarriageRequestDto carriageRequestDTO){
         CarriageRequest order = CarriageRequestMapper.INSTANSE.toEntity(carriageRequestDTO);
-        log.info("FROM SERVISE: saveOrder() => order: "+order);
+        log.info("saveOrder(): {}",order);
         orderRepository.save(order);
         return carriageRequestDTO;
     }
@@ -292,7 +286,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public CarriageRequestDto deleteOrderById(Long id) {
         Optional<CarriageRequest> order = Optional.ofNullable(orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Order wasn't found by id " + id)));
-        log.info("FROM SERVISE: deleteOrderById() => order: "+order);
+        log.info("deleteOrderById(): {}",order);
         orderRepository.deleteById(id);
         return CarriageRequestMapper.INSTANSE.toDto(order.get());
     }
@@ -300,14 +294,13 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Override
     @Transactional(readOnly = true)
     public List<CarriageRequest> findAllOrders() {
-        log.info("FROM SERVISE: findAllOrders()");
         return orderRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CarriageRequest> findAllFreeOrders() {
-        log.info("FROM SERVISE: findAllFreeOrders()");
+        log.info("findAllFreeOrders()");
         List <CarriageRequest> orderList = orderRepository.findAll();
         List <CarriageRequest> freeOrderList = new ArrayList<>();
         for (CarriageRequest orderFromDb: orderList){
@@ -321,7 +314,6 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Override
     @Transactional(readOnly = true)
     public Page<CarriageRequestDto> findAllOrdersNativeWithPagination(Integer page, Integer size) {
-        log.info("FROM SERVISE: findAllOrdersNativeWithPagination()");
         var pageable  = PageRequest.of(page,size, Sort.by("id"));
         Page<CarriageRequest> orderList = orderRepository.findAllOrdersNative(pageable);
         Page<CarriageRequestDto> orderDtos = orderList.map(CarriageRequestMapper.INSTANSE::toDto);
@@ -334,7 +326,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public TruckParkDto findTruckParkById(Long id) {
         Optional<TruckPark> park = Optional.ofNullable(parkRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("TruckPark wasn't found by id " + id)));
-        log.info("FROM SERVISE: findTruckParkById() => park: "+park);
+        log.info("findTruckParkById(): {}",park);
         return TruckParkMapper.INSTANSE.toDto(park.get());
     }
 
@@ -342,7 +334,7 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     @Transactional
     public TruckParkDto saveTruckPark(TruckParkDto parkDTO){
         TruckPark park = TruckParkMapper.INSTANSE.toEntity(parkDTO);
-        log.info("FROM SERVISE: saveTruckPark() => park: "+park);
+        log.info("saveTruckPark(): {}",park);
         parkRepository.save(park);
         return parkDTO;
     }
@@ -352,21 +344,19 @@ public class FreightExchangeServiceImpl implements FreightExchangeService, UserD
     public TruckParkDto deleteTruckParkById(Long id) {
         Optional<TruckPark> park = Optional.ofNullable(parkRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("TruckPark wasn't found by id " + id)));
-        log.info("FROM SERVISE: deleteTruckParkById() => park: "+park);
+        log.info("deleteTruckParkById(): {}",park);
         parkRepository.deleteById(id);
         return TruckParkMapper.INSTANSE.toDto(park.get());
     }
 
     @Transactional(readOnly = true)
     public List<TruckPark> findAllTruckParks(){
-        log.info("FROM SERVISE: findAllTruckParks()");
         return parkRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<TruckParkDto> findAllTruckParksNativeWithPagination(Integer page, Integer size) {
-        log.info("FROM SERVISE: findAllTruckParksNativeWithPagination()");
         var pageable  = PageRequest.of(page,size);
         Page<TruckPark> parkList = parkRepository.findAllTruckParksNative(pageable);
         Page<TruckParkDto> parkDtos = parkList.map(TruckParkMapper.INSTANSE::toDto);

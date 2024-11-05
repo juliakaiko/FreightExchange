@@ -27,22 +27,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j // для логирования
 public class AuthController {
 
-    private final FreightExchangeServiceImpl service;
-
     private final AuthenticationServiceImpl authenticationService;
 
     @PostMapping("/registration")
     public JwtResponse registration(@RequestBody @Valid RegistrationRequest request) {
-        log.info("FROM AuthController => User registration request : "+request.getEmail());
-        return authenticationService.registration(request);
+        log.info("User registration request: {}",request.getEmail());
+        return authenticationService.registrate(request);
     }
 
     @PostMapping("/authentication")
     public ResponseEntity<?> authentication(@RequestBody @Valid AuthenticationRequest request) {
-        log.info("FROM AuthController => User authentication request : "+request.getEmail());
-        JwtResponse response = null;
+        log.info("User authentication request: {}",request.getEmail());
+        JwtResponse response;
         try {
-            response = authenticationService.authentication(request);
+            response = authenticationService.authenticate(request);
         }catch (ValidationException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

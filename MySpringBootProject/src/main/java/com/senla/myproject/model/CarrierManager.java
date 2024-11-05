@@ -26,7 +26,7 @@ public class CarrierManager extends User implements Serializable { // UserDetail
                      //CascadeType.DETACH,
                      CascadeType.MERGE,
                      //CascadeType.REFRESH,
-                     CascadeType.PERSIST
+                     //CascadeType.PERSIST
              })
      @JoinTable(
              name = "carrier_managers",

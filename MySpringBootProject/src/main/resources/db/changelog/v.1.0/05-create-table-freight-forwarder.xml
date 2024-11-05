@@ -33,7 +33,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="role" type="character varying(200)" defaultValue="FORWARDER">
-                <!--<constraints nullable="false"/>-->
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>

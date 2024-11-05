@@ -22,7 +22,7 @@ import java.util.Set;
 public class FreightForwarder extends User implements Serializable {
 
     //у одного экспедитора, м.б. много заказов CascadeType.PERSIST
-    @OneToMany(mappedBy="forwarder", cascade = CascadeType.PERSIST, fetch= FetchType.LAZY, orphanRemoval = false) //fetch=FetchType.LAZY, orphanRemoval = true
+    @OneToMany(mappedBy="forwarder", cascade = CascadeType.MERGE, fetch= FetchType.LAZY, orphanRemoval = false) //fetch=FetchType.LAZY, orphanRemoval = true
     @JsonIgnore
     private Set<CarriageRequest> orders = new HashSet<>();
 

@@ -29,7 +29,7 @@ public class TruckPark implements Serializable {
     private Integer trucksLoadCapacity;
 
     // один автопарк у одного перевозчика => @OneToOne
-    @OneToOne //(fetch = FetchType.LAZY)
+    @OneToOne (cascade=CascadeType.ALL)//(fetch = FetchType.LAZY)
     @MapsId // Связывает идентификаторы с сущностью Carrier
     @JsonIgnore
     private Carrier carrier;

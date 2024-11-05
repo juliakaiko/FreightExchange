@@ -9,6 +9,7 @@ import com.senla.myproject.model.Role;
 import com.senla.myproject.model.User;
 import com.senla.myproject.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,13 +17,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationServiceImpl {
     private final FreightExchangeServiceImpl userService;
     private final JwtTokenUtils jwtTokenUtils;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    public JwtResponse registration(RegistrationRequest request) {
+    public JwtResponse registrate(RegistrationRequest request) {
         User user = null;
         if (request.getRole().getAuthority().equals("MANAGER")){
 
@@ -34,6 +36,7 @@ public class AuthenticationServiceImpl {
                             .role(Role.MANAGER)
                             .build();
             CarrierManager manager = (CarrierManager)user;
+            log.info("Request to add new CarrierManager: {}",manager);
             CarrierManagerDto managerDto = CarrierManagerMapper.INSTANSE.toDto(manager);
             userService.saveCarrierManager(managerDto);
         }
@@ -48,6 +51,7 @@ public class AuthenticationServiceImpl {
                     .role(Role.FORWARDER)
                     .build();
             FreightForwarder forwarder = (FreightForwarder)user;
+            log.info("Request to add new FreightForwarder: {}",forwarder);
             FreightForwarderDto forwarderDto =  FreightForwarderMapper.INSTANSE.toDto(forwarder);
             userService.saveFreightForwarder(forwarderDto);
         }
@@ -56,12 +60,13 @@ public class AuthenticationServiceImpl {
         return new JwtResponse(jwt);
     }
 
-    public JwtResponse authentication(AuthenticationRequest request) {
+    public JwtResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
                 request.getPassword()
         ));
 
+        log.info("Request to authenticate user: {}",request.getEmail());
         var user = userService.loadUserByUsername(request.getEmail());
 
         var jwt = jwtTokenUtils.generateToken(user);

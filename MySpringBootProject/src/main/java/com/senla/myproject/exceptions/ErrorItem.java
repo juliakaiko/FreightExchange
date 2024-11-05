@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+@Data // @RequiredArgsConstructor (final fields)+@ToString+@EqualsAndHashCode+@Getter+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ErrorItem {

@@ -14,9 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 
 import java.util.*;
 
@@ -124,8 +122,8 @@ public class FreightExchangeServiceImplTest {
         assertEquals(managerList, resultList);
     }
 
-  /*  @Test
-    public  void findAllManagersNativeWithPagination_whenCorrect_ReturnCarrierManagerList() {
+    @Test
+    public void findAllManagersNativeWithPagination_whenCorrect_ReturnCarrierManagerList() {
         log.info("FROM SERVISE: findAllManagersNativeWithPagination()");
 
         CarrierManager manager1 = CarrierManagerGenerator.generateCarrierManager();
@@ -133,22 +131,24 @@ public class FreightExchangeServiceImplTest {
         manager2.setId(2l); manager2.setEmail("test2@test.by");
         CarrierManager manager3 = CarrierManagerGenerator.generateCarrierManager();
         manager3.setId(3l); manager3.setEmail("test3@test.by");
-        List <CarrierManager> managerList = new ArrayList<>();
+        List<CarrierManager> managerList = new ArrayList<>();
         managerList.add(manager1);
         managerList.add(manager2);
         managerList.add(manager3);
-
-        managerRepository.save(manager1); managerRepository.save(manager2); managerRepository.save(manager3);
-        //managerList.stream().map(manager -> CarrierManagerMapper.INSTANSE.toDto(manager));
-
+        //managerRepository.save(manager1); managerRepository.save(manager2); managerRepository.save(manager3);
         var pageable  = PageRequest.of(0,1, Sort.by("id"));
-        Page <CarrierManagerDto> resultList = service.findAllManagersNativeWithPagination(0,1);
-        when(this.orderRepository.findAllOrdersNative(pageable)).thenReturn(resultList);
-        //when(this.orderRepository.findAllOrdersNative(pageable).getSize()).thenReturn(1);
+        Page<CarrierManager> managerPagebleList = new PageImpl<CarrierManager> (managerList, pageable,3);
+        Page<CarrierManagerDto> managerPagebleListDto = managerPagebleList.map(CarrierManagerMapper.INSTANSE::toDto);
+
+        when(this.managerRepository.findAllManagersNative(pageable)).thenReturn(managerPagebleList);
+
+        Page<CarrierManagerDto> resultListDto = service.findAllManagersNativeWithPagination(0,1);
+        //Page<CarrierManager> resultList = resultListDto.map(CarrierManagerMapper.INSTANSE::toEntity);
 
         verify(managerRepository, times(1)).findAllManagersNative(pageable);
-    }*/
 
+        assertEquals(managerPagebleListDto, resultListDto);
+    }
 
     @Test
     public void deleteCarrierManagerById_whenCorrect_thenReturnCarrierManagerDto() {
@@ -206,7 +206,7 @@ public class FreightExchangeServiceImplTest {
     }
 
     @Test
-    public void findAllCarries_whenCorrect_thenReturnCarrierList() {
+    public void findAllCarriers_whenCorrect_thenReturnCarrierList() {
         Carrier carrier1 = CarrierGenerator.generateCarrier();
         Carrier carrier2 = CarrierGenerator.generateCarrier();
         carrier2.setId(2l); carrier2.setAddress("carrier1_address");
@@ -227,6 +227,35 @@ public class FreightExchangeServiceImplTest {
         assertEquals(carrierList, resultList);
     }
 
+    @Test
+    public  void findAllCarriersNativeWithPagination_whenCorrect_ReturnCarrierList() {
+        log.info("FROM SERVISE: findAllCarriersNativeWithPagination()");
+
+        Carrier carrier1 = CarrierGenerator.generateCarrier();
+        Carrier carrier2 = CarrierGenerator.generateCarrier();
+        carrier2.setId(2l); carrier2.setAddress("carrier1_address");
+        Carrier carrier3 = CarrierGenerator.generateCarrier();
+        carrier3.setId(3l); carrier3.setAddress("carrier3_address");
+        List <Carrier> carrierList = new ArrayList<>();
+        carrierList.add(carrier1);
+        carrierList.add(carrier2);
+        carrierList.add(carrier3);
+        //managerRepository.save(manager1); managerRepository.save(manager2); managerRepository.save(manager3);
+        var pageable  = PageRequest.of(0,1, Sort.by("id"));
+        Page<Carrier> carrierPagebleList = new PageImpl<Carrier> (carrierList, pageable,3);
+        Page<CarrierDto> carrierPagebleListDto = carrierPagebleList.map(CarrierMapper.INSTANSE::toDto);
+
+        when(this.carrierRepository.findAllCarriersNative(pageable)).thenReturn(carrierPagebleList);
+
+        Page<CarrierDto> resultListDto = service.findAllCarriersNativeWithPagination(0,1);
+        Page<Carrier> resultList = resultListDto.map(CarrierMapper.INSTANSE::toEntity);
+        //resultList.forEach(carrier -> System.out.println(carrier));
+
+        verify(carrierRepository, times(1)).findAllCarriersNative(pageable);
+
+        assertEquals(carrierPagebleListDto, resultListDto);
+    }
+
     //FreightForwarder
     @Test
     public void findFreightForwarderById_whenCorrect_thenReturnFreightForwarderDto() {
@@ -243,7 +272,7 @@ public class FreightExchangeServiceImplTest {
     }
 
     @Test
-    public void findFreightForwarderByEmail_whenCorrect_thenReturnCarrierManagerDto() {
+    public void findFreightForwarderByEmail_whenCorrect_thenReturnFreightForwarderDto() {
         FreightForwarder forwarder =FreightForwarderGenerator.generateFreightForwarder();
         FreightForwarderDto forwarderDto = FreightForwarderMapper.INSTANSE.toDto(forwarder);
         forwarderRepository.save(forwarder);
@@ -321,6 +350,35 @@ public class FreightExchangeServiceImplTest {
         log.info("FROM SERVICE_TEST: find all the FreightForwarders => list: "+service.findAllForwarders());
         //Проверка
         assertEquals(forwarderList, resultList);
+    }
+
+    @Test
+    public void findAllForwardersNativeWithPagination_whenCorrect_ReturnForwarderList() {
+        log.info("FROM SERVISE: findAllForwardersNativeWithPagination()");
+
+        FreightForwarder forwarder1 = FreightForwarderGenerator.generateFreightForwarder();
+        FreightForwarder forwarder2 = FreightForwarderGenerator.generateFreightForwarder();
+        forwarder2.setId(2l); forwarder2.setEmail("test2@test.by");
+        FreightForwarder forwarder3 = FreightForwarderGenerator.generateFreightForwarder();
+        forwarder3.setId(3l); forwarder3.setEmail("test3@test.by");
+        List <FreightForwarder> forwarderList = new ArrayList<>();
+        forwarderList.add(forwarder1);
+        forwarderList.add(forwarder2);
+        forwarderList.add(forwarder3);
+
+        var pageable  = PageRequest.of(0,1, Sort.by("id"));
+        Page<FreightForwarder> forwarderPagebleList = new PageImpl<FreightForwarder> (forwarderList, pageable,3);
+        Page<FreightForwarderDto> forwarderPagebleListDto = forwarderPagebleList.map(FreightForwarderMapper.INSTANSE::toDto);
+
+        when(this.forwarderRepository.findAllFreightForwardersNative(pageable)).thenReturn(forwarderPagebleList);
+
+        Page<FreightForwarderDto> resultListDto = service.findAllForwardersNativeWithPagination(0,1);
+        //Page<FreightForwarder> resultList = resultListDto.map(FreightForwarderMapper.INSTANSE::toEntity);
+        //resultList.forEach(forwarder -> System.out.println(forwarder));
+
+        verify(forwarderRepository, times(1)).findAllFreightForwardersNative(pageable);
+
+        assertEquals(forwarderPagebleListDto, resultListDto);
     }
 
     //Order
@@ -409,7 +467,7 @@ public class FreightExchangeServiceImplTest {
     }
 
     @Test
-    public void cancelOrderwhenCorrect_thenReturnOrderDto(){
+    public void cancelOrder_whenCorrect_thenReturnOrderDto(){
         CarriageRequest order = CarriageRequestGenerator.generateOrder();
         CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
         manager.getOrders().add(order);
@@ -437,7 +495,7 @@ public class FreightExchangeServiceImplTest {
     }
 
     @Test
-    public void cancelOrderwhenInCorrect_thenReturnNotFoundException(){
+    public void cancelOrder_whenInCorrect_thenReturnNotFoundException(){
         CarriageRequest order = CarriageRequestGenerator.generateOrder();
         CarrierManager manager = CarrierManagerGenerator.generateCarrierManager();
         try {
@@ -497,6 +555,35 @@ public class FreightExchangeServiceImplTest {
         log.info("FROM SERVICE_TEST: find all the CarriageRequests => list: "+service.findAllOrders());
         //Проверка
         assertEquals(orderList, resultList);
+    }
+
+    @Test
+    public void findAllOrdersNativeWithPagination_whenCorrect_ReturnOrderList() {
+        log.info("FROM SERVISE: findAllOrdersNativeWithPagination()");
+
+        CarriageRequest order1 = CarriageRequestGenerator.generateOrder();
+        CarriageRequest order2 = CarriageRequestGenerator.generateOrder();
+        order2.setId(2l);
+        CarriageRequest order3 = CarriageRequestGenerator.generateOrder();
+        order3.setId(3l);
+        List <CarriageRequest> orderList = new ArrayList<>();
+        orderList.add(order1);
+        orderList.add(order2);
+        orderList.add(order3);
+
+        var pageable  = PageRequest.of(0,1, Sort.by("id"));
+        Page<CarriageRequest> orderPagebleList = new PageImpl<CarriageRequest> (orderList, pageable,3);
+        Page<CarriageRequestDto> orderPagebleListDto = orderPagebleList.map(CarriageRequestMapper.INSTANSE::toDto);
+
+        when(this.orderRepository.findAllOrdersNative(pageable)).thenReturn(orderPagebleList);
+
+        Page<CarriageRequestDto> resultListDto = service.findAllOrdersNativeWithPagination(0,1);
+        Page<CarriageRequest> resultList = resultListDto.map(CarriageRequestMapper.INSTANSE::toEntity);
+        resultList.forEach(order -> System.out.println(order));
+
+        verify(orderRepository, times(1)).findAllOrdersNative(pageable);
+
+        assertEquals(orderPagebleListDto, resultListDto);
     }
 
     //TruckPark
@@ -563,5 +650,33 @@ public class FreightExchangeServiceImplTest {
         log.info("FROM SERVICE_TEST: find all the TruckParks => list: "+service.findAllTruckParks());
         //Проверка
         assertEquals(parkList, resultList);
+    }
+
+    @Test
+    public void findAllTruckParksNativeWithPagination_whenCorrect_ReturnTruckParkList() {
+        log.info("FROM SERVISE: findAllTruckParksNativeWithPagination()");
+        TruckPark park1 = TruckParkGenerator.generateTruckPark();
+        TruckPark park2 = TruckParkGenerator.generateTruckPark();
+        park2.setId(2l);
+        TruckPark park3 = TruckParkGenerator.generateTruckPark();
+        park3.setId(3l);
+        List <TruckPark> parkList = new ArrayList<>();
+        parkList.add(park1);
+        parkList.add(park2);
+        parkList.add(park3);
+
+        var pageable  = PageRequest.of(0,1);
+        Page<TruckPark> parkPagebleList = new PageImpl<TruckPark> (parkList, pageable,3);
+        Page<TruckParkDto> parkPagebleListDto = parkPagebleList.map(TruckParkMapper.INSTANSE::toDto);
+
+        when(this.parkRepository.findAllTruckParksNative(pageable)).thenReturn(parkPagebleList);
+
+        Page<TruckParkDto> resultListDto = service.findAllTruckParksNativeWithPagination(0,1);
+        Page<TruckPark> resultList = resultListDto.map(TruckParkMapper.INSTANSE::toEntity);
+        resultList.forEach(park-> System.out.println(park));
+
+        verify(parkRepository, times(1)).findAllTruckParksNative(pageable);
+
+        assertEquals(parkPagebleListDto, resultListDto);
     }
 }

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -26,7 +27,7 @@ import java.util.Set;
 @UserExceptionHandler
 @PreAuthorize("hasAuthority('MANAGER')")
 @Slf4j
-public class CarrierManagerUserController {
+public class CarrierManagerController {
 
     private final FreightExchangeService service;
 
@@ -43,7 +44,7 @@ public class CarrierManagerUserController {
     //http://localhost:8080/app/orders/take_order/N-85632190
     //@PathVariable извлекает значения из пути URI
     public ResponseEntity <?> takeCarriageRequestByNameIsLike (@PathVariable("name") String orderName) {
-        log.info("FROM CarrierManagerUserController => Request to take the Order with name: "+orderName);
+        log.info("Request to take the Order with name: {}", orderName);
         CarrierManager manager = getAuthenticatedManager();
 
         CarriageRequestDto orderDto = service.takeValidOrder(manager, orderName);
@@ -56,7 +57,7 @@ public class CarrierManagerUserController {
     @GetMapping("orders/cancel_order/{name}")
     //http://localhost:8080/app/orders/cancel_order/N-12345678
     public ResponseEntity <?> cancelCarriageRequestByNameIsLike (@PathVariable("name") String orderName) {
-        log.info("FROM CarrierManagerUserController => Request to cancel the Order with name: "+orderName);
+        log.info("Request to cancel the Order with name: {}", orderName);
         CarrierManager manager = getAuthenticatedManager();
         CarriageRequestDto savedOrderDto = service.cancelOrder(manager,orderName);
 
@@ -69,7 +70,7 @@ public class CarrierManagerUserController {
     //http://localhost:8080/app/manager/orders
     public ResponseEntity <?> showManagerOrders () {
         CarrierManager manager = getAuthenticatedManager();
-        log.info("FROM CarrierManagerUserController => Request to show all orders of the manager "+manager);
+        log.info("Request to show all orders of the manager: {}", manager);
 
         Set<CarriageRequest> managerOrderList = manager.getOrders();
 
@@ -80,13 +81,18 @@ public class CarrierManagerUserController {
 
     @PutMapping("/managers")
     public ResponseEntity <?> updateCarrierManager (@RequestBody @Valid CarrierManagerDto managerDto){
-        log.info("FROM UserController => Request to update the CarrierManager: "+managerDto);
+        log.info("Request to update the CarrierManager: {}",managerDto);
         CarrierManagerDto managerDto2 = service.findCarrierManagerById(managerDto.getId());
-        if (managerDto2 != null) {
+        CarrierManager authenticatedManager = getAuthenticatedManager();
+
+        CarrierManagerDto savedManagerDto;
+        if (managerDto2 != null & managerDto2.getId().equals(authenticatedManager.getId())) {
             managerDto.setCarriers(managerDto2.getCarriers());
             managerDto.setOrders(managerDto2.getOrders());
-        }
-        CarrierManagerDto savedManagerDto = service.saveCarrierManager(managerDto);
+            savedManagerDto = service.saveCarrierManager(managerDto);
+        }else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
         return ObjectUtils.isEmpty(savedManagerDto)
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(savedManagerDto);
@@ -94,20 +100,37 @@ public class CarrierManagerUserController {
 
     @DeleteMapping("/managers/{id}")
     public ResponseEntity <?> deleteCarrierManager (@PathVariable("id") Long id){
-        log.info("FROM UserController => Request to delete the CarrierManager by id: "+id);
-        CarrierManagerDto managerDto = service.deleteCarrierManagerById(id);
-        return ObjectUtils.isEmpty(managerDto)
+        log.info("Request to delete the CarrierManager by id: {}",id);
+        CarrierManagerDto managerDto = service.findCarrierManagerById(id);
+        CarrierManager authenticatedManager = getAuthenticatedManager();
+
+        CarrierManagerDto deletedManagerDto;
+        if (managerDto.getId().equals(authenticatedManager.getId())) {
+            deletedManagerDto = service.deleteCarrierManagerById(id);
+        }else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        return ObjectUtils.isEmpty(deletedManagerDto)
                 ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(managerDto);
+                : ResponseEntity.ok(deletedManagerDto);
+    }
+
+    @PostMapping("/carriers")
+    public ResponseEntity <?> createCarrier (@RequestBody @Valid CarrierDto carrierDto){
+        log.info("Request to add new Carrier: {}",carrierDto);
+        CarrierDto savedCarrierDto =  service.saveCarrier(carrierDto);
+        return ResponseEntity.ok (savedCarrierDto);
     }
 
     @PutMapping("/carriers")
     public ResponseEntity <?> updateCarrier (@RequestBody @Valid CarrierDto carrierDto){
-        log.info("FROM UserController => Request to update the Carrier: "+carrierDto);
+        log.info("Request to update the Carrier: {}", carrierDto);
         CarrierDto carrierDto2 = service.findCarrierById(carrierDto.getId());
-        if (carrierDto2 != null)
-            carrierDto.setPark(carrierDto2.getPark());
-        CarrierDto savedCarrierDto = service.saveCarrier(carrierDto);
+        CarrierDto savedCarrierDto = null;
+        if (carrierDto2 != null) {
+            //carrierDto.setPark(carrierDto2.getPark());
+            savedCarrierDto = service.saveCarrier(carrierDto);
+        }
         return ObjectUtils.isEmpty(savedCarrierDto)
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(savedCarrierDto);
@@ -115,16 +138,32 @@ public class CarrierManagerUserController {
 
     @DeleteMapping("/carriers/{id}")
     public ResponseEntity <?> deleteCarrier (@PathVariable("id") Long id) {
-        log.info("FROM UserController => Request to delete the Carrier by id: "+id);
+        log.info("Request to delete the Carrier by id: {}",id);
         CarrierDto carrierDto = service.deleteCarrierById(id);
         return ObjectUtils.isEmpty(carrierDto)
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(carrierDto);
     }
 
+    @DeleteMapping("/truck_parks/{id}")
+    public ResponseEntity <?> deleteTruckPark (@PathVariable("id") Long id) {
+        log.info("Request to delete the TruckPark by id: {}",id);
+        TruckParkDto parkDto = service.deleteTruckParkById(id);
+        return ObjectUtils.isEmpty(parkDto)
+                ? ResponseEntity.notFound().build()
+                : ResponseEntity.ok(parkDto);
+    }
+
+    @PostMapping("/truck_parks")
+    public ResponseEntity <?> createTruckPark (@RequestBody @Valid TruckParkDto parkDTO){
+        log.info("Request to add new Truck Park: {}",parkDTO);
+        TruckParkDto savedParkDTO = service.saveTruckPark(parkDTO);
+        return ResponseEntity.ok (savedParkDTO);
+    }
+
     @PutMapping("/truck_parks")
     public ResponseEntity <?> updateTruckPark (@RequestBody @Valid TruckParkDto parkDto){
-        log.info("FROM UserController => Request to update the TruckPark: "+parkDto);
+        log.info("Request to update the TruckPark: {}", parkDto);
         TruckParkDto parkDto2 =  service.findTruckParkById(parkDto.getId());
         if (parkDto2 != null)
             parkDto.setCarrier(parkDto2.getCarrier());
@@ -132,14 +171,5 @@ public class CarrierManagerUserController {
         return ObjectUtils.isEmpty(savedParkDto)
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(savedParkDto);
-    }
-
-    @DeleteMapping("/truck_parks/{id}")
-    public ResponseEntity <?> deleteTruckPark (@PathVariable("id") Long id) {
-        log.info("FROM UserController => Request to delete the TruckPark by id: "+id);
-        TruckParkDto parkDto = service.deleteTruckParkById(id);
-        return ObjectUtils.isEmpty(parkDto)
-                ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(parkDto);
     }
 }
