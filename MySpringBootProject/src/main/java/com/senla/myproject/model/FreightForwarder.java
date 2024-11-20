@@ -19,7 +19,7 @@ import java.util.Set;
 @ToString(exclude = {"orders"})
 @Table(name = "freight_forwarder") // говорим Hibernate, с какой именно таблицей необходимо связать (map) данный класс.
 @Entity (name = "FreightForwarder") // на этот объект будет мапиться SQL
-public class FreightForwarder extends User implements Serializable {
+public class FreightForwarder extends User {
 
     //у одного экспедитора, м.б. много заказов CascadeType.PERSIST
     @OneToMany(mappedBy="forwarder", cascade = CascadeType.MERGE, fetch= FetchType.LAZY, orphanRemoval = false) //fetch=FetchType.LAZY, orphanRemoval = true

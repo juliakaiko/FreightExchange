@@ -17,7 +17,7 @@ import java.util.Set;
 @ToString(exclude = {"carrierManagers", "park"})
 @Table(name = "carrier") // С помощью этой аннотации мы говорим Hibernate,  с какой именно таблицей необходимо связать данную сущность.
 @Entity (name = "Carrier") // на этот объект будет мапиться SQL
-public class Carrier implements Serializable { //Serialization — переводит объект в последовательность байтов => кроссплатформенность, сохранить в файл и передать по сети
+public class Carrier  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // БД вставляет данные и она автоматически присваивает значение

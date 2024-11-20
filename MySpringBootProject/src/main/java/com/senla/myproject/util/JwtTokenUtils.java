@@ -35,12 +35,12 @@ public class JwtTokenUtils { //JwtService
         return extractAllClaims(token).get("roles", List.class);
      }
 
-    //Проверка токена на валидность
+    /*//Проверка токена на валидность
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String userName = getUsername(token);
         return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token); //true, если токен валиден
     }
-
+*/
     //Извлечение данных из токена
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) { //claimsResolvers функция извлечения данных
         final Claims claims = extractAllClaims(token);

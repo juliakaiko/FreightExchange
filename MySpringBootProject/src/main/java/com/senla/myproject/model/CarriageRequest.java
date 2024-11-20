@@ -15,7 +15,7 @@ import java.io.Serializable;
 @ToString(exclude = {"forwarder", "manager"})
 @Table(name = "carriage_request") // говорим Hibernate, с какой именно таблицей необходимо связать (map) данный класс.
 @Entity(name = "CarriageRequest")// на этот объект будет мапиться SQL
-public class CarriageRequest implements Serializable {
+public class CarriageRequest  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // БД вставляет данные и она автоматически присваивает значение

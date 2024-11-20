@@ -24,7 +24,7 @@ public class SwaggerConfiguration {
                 .components(new Components().addSecuritySchemes
                         ("Bearer Authentication", createAPIKeyScheme()))
                 .info(new Info().title("Freight Exchange API")
-                        .description("Some custom description of API."));
+                        .description("Freight exchange for carriers where carrier manager can find a suitable order for the transportation"));
     }
 
     private SecurityScheme createAPIKeyScheme() {

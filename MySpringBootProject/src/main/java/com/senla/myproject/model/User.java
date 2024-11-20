@@ -18,8 +18,7 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @MappedSuperclass
-public class User implements UserDetails {
-
+public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // БД вставляет данные и она автоматически присваивает значение
     @Column(name="id")

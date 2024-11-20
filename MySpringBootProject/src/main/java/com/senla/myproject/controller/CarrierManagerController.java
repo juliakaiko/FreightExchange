@@ -39,7 +39,7 @@ public class CarrierManagerController {
         return manager;
     }
 
-    @GetMapping("orders/take_order/{name}")
+    @PutMapping("orders/take_order/{name}")
     //http://localhost:8080/app/orders/take_order/N-12345678
     //http://localhost:8080/app/orders/take_order/N-85632190
     //@PathVariable извлекает значения из пути URI
@@ -54,7 +54,7 @@ public class CarrierManagerController {
                 : ResponseEntity.ok(orderDto);
     }
 
-    @GetMapping("orders/cancel_order/{name}")
+    @PutMapping("orders/cancel_order/{name}")
     //http://localhost:8080/app/orders/cancel_order/N-12345678
     public ResponseEntity <?> cancelCarriageRequestByNameIsLike (@PathVariable("name") String orderName) {
         log.info("Request to cancel the Order with name: {}", orderName);

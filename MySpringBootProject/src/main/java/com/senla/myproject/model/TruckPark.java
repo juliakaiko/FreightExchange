@@ -15,7 +15,7 @@ import java.io.Serializable;
 @ToString
 @Table(name = "truck_park")
 @Entity (name = "TruckPark")
-public class TruckPark implements Serializable {
+public class TruckPark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // БД вставляет данные и она автоматически присваивает значение

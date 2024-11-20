@@ -19,15 +19,9 @@ import java.util.Set;
 @Entity (name = "CarrierManager") // на этот объект будет мапиться SQL
 @NamedEntityGraph (name = "carrier_manager_entity_graph", //загружает данные в один запрос выбора, избегая повторного обращения к базе данных
                    attributeNodes = @NamedAttributeNode("carriers"))
-public class CarrierManager extends User implements Serializable { // UserDetails
+public class CarrierManager extends User  {
 
-     @ManyToMany(fetch = FetchType.LAZY, cascade =
-             {
-                     //CascadeType.DETACH,
-                     CascadeType.MERGE,
-                     //CascadeType.REFRESH,
-                     //CascadeType.PERSIST
-             })
+     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
      @JoinTable(
              name = "carrier_managers",
              joinColumns = { @JoinColumn(name = "manager_id") },
